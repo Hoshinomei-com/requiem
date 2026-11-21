@@ -785,7 +785,7 @@ const BGM=(()=>{
     if(!routed)comp.connect(ctx.destination);
     const rev=ctx.createConvolver();rev.buffer=impulse(4.8,2.4);
     const rg=ctx.createGain();rg.gain.value=.8;rev.connect(rg);rg.connect(master);
-    musicBus=ctx.createGain();musicBus.gain.value=.85;musicBus.connect(master);
+    musicBus=ctx.createGain();musicBus.gain.value=1.05;musicBus.connect(master);
     const ms=ctx.createGain();ms.gain.value=.75;musicBus.connect(ms);ms.connect(rev);
     sfxBus=ctx.createGain();sfxBus.gain.value=.8;sfxBus.connect(master);
     const ss=ctx.createGain();ss.gain.value=.45;sfxBus.connect(ss);ss.connect(rev);
@@ -819,9 +819,9 @@ const BGM=(()=>{
   function startDrone(){
     if(droneOn)return;droneOn=true;const t=ctx.currentTime;
     const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+5);
-    const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=380;
-    const l=ctx.createOscillator();l.frequency.value=.05;const lg=ctx.createGain();lg.gain.value=160;l.connect(lg);lg.connect(lp.frequency);l.start();
-    [[hz(38),'sawtooth',.35],[hz(38)*1.004,'sawtooth',.35],[hz(50),'triangle',.6],[hz(57),'sine',.25]].forEach(([f,ty,v])=>{const o=ctx.createOscillator();o.type=ty;o.frequency.value=f;const og=ctx.createGain();og.gain.value=v;o.connect(og);og.connect(lp);o.start()});
+    const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1000;
+    const l=ctx.createOscillator();l.frequency.value=.05;const lg=ctx.createGain();lg.gain.value=300;l.connect(lg);lg.connect(lp.frequency);l.start();
+    [[hz(38),'sine',.3],[hz(50),'sawtooth',.28],[hz(50)*1.004,'sawtooth',.28],[hz(62),'triangle',.5],[hz(69),'triangle',.3]].forEach(([f,ty,v])=>{const o=ctx.createOscillator();o.type=ty;o.frequency.value=f;const og=ctx.createGain();og.gain.value=v;o.connect(og);og.connect(lp);o.start()});
     lp.connect(g);g.connect(musicBus);
   }
   // D minor lament: Dm – Bb – Gm – A
@@ -832,7 +832,7 @@ const BGM=(()=>{
     if(!ctx)return;
     while(nextT<ctx.currentTime+1.2){
       const i=step%4,t=nextT;
-      if(level>=1)PROG[i].forEach((m,k)=>voice(m,t,BAR,k===3?.05:.04));
+      if(level>=1)PROG[i].forEach((m,k)=>voice(m+12,t,BAR,k===3?.06:.05));
       if(level>=2){
         if(i===0)bell(62,t+.05,.16);
         if(i===2)bell(57,t+.05,.12);
