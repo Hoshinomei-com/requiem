@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RE:QUIEM — 사신들의 진혼곡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cinzel+Decorative:wght@700&family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060508; --bg2:#0d0b10; --panel:#120f16; --line:#2a2230;
+  --ink:#ece6ee; --mute:#a59bab; --dim:#6f6576;
+  --blood:#b3122e; --blood2:#e0304a; --gold:#c8a860; --soul:#cfe3ff;
+  --serif:'Gowun Batang',serif; --display:'Cinzel',serif; --deco:'Cinzel Decorative','Cinzel',serif; --sans:'Noto Sans KR',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{max-width:100%;overflow-x:hidden;overflow-x:clip;overscroll-behavior-x:none;touch-action:pan-y pinch-zoom}
+html{scroll-behavior:smooth;scroll-padding-top:56px}
+body{word-break:keep-all;overflow-wrap:anywhere;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;position:relative}
+body.lock{overflow:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+img{display:block;max-width:100%}
+::selection{background:var(--blood);color:#fff}
+
+/* atmosphere: grain + vignette + soul particles */
+body::before{content:"";position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+body::after{content:"";position:fixed;inset:0;z-index:59;pointer-events:none;background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(0,0,0,.65))}
+#souls{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,header,footer{position:relative;z-index:1}
+
+/* image with fallback */
+.ph{position:relative;overflow:hidden;background:
+  radial-gradient(120% 80% at 50% 0%, color-mix(in srgb,var(--c,#b3122e) 55%, transparent), transparent 70%),
+  linear-gradient(180deg,#1a1520,#0a080d);}
+.ph>span{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--display);letter-spacing:.25em;font-weight:700;color:color-mix(in srgb,var(--c,#b3122e) 70%, #fff);font-size:14px;text-align:center;padding:10px}
+.ph>span svg{width:34%;max-width:70px;opacity:.75}
+.ph>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* progress */
+#prog{position:fixed;top:0;left:0;height:2px;width:0;z-index:51;background:linear-gradient(90deg,#5a0613,var(--blood2));box-shadow:0 0 10px var(--blood2)}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:10px 14px 10px 18px;
+  background:linear-gradient(180deg,rgba(6,5,8,.92),rgba(6,5,8,.55));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(179,18,46,.15)}
+nav .logo{font-family:var(--display);font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
+nav .logo b{color:var(--blood2)}
+.burger{width:40px;height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.burger i{display:block;width:20px;height:1.5px;background:#e9dfe4;transition:.3s}
+.burger i:nth-child(2){width:14px;background:var(--blood2)}
+.menu-open .burger i:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.menu-open .burger i:nth-child(2){opacity:0}
+.menu-open .burger i:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+#menu{position:fixed;inset:0;z-index:49;background:radial-gradient(80% 60% at 50% 30%,rgba(122,11,31,.35),transparent 70%),rgba(6,5,8,.97);
+  display:flex;flex-direction:column;justify-content:center;padding:70px 32px 40px;opacity:0;visibility:hidden;transition:.35s}
+.menu-open #menu{opacity:1;visibility:visible}
+#menu a,#menu button{display:flex;align-items:baseline;gap:14px;padding:11px 0;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.05);text-align:left;width:100%;
+  transform:translateY(10px);opacity:0;transition:.4s}
+.menu-open #menu a,.menu-open #menu button{transform:none;opacity:1}
+#menu .rn{font-family:var(--display);color:var(--blood2);width:34px;font-size:13px;letter-spacing:.1em}
+#menu .kr{font-family:var(--serif);font-size:21px}
+#menu .la{font-family:var(--display);font-size:10px;letter-spacing:.25em;color:var(--dim);margin-left:auto}
+#menu .replay{margin-top:18px;border:0;color:var(--mute);font-size:14px}
+
+/* hero */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;padding:90px 22px 70px;isolation:isolate;overflow:hidden}
+.hero .bg{position:absolute;inset:0;z-index:-2}
+.hero .bg>img{object-position:center 25%;animation:kb 26s ease-in-out infinite alternate}
+@media(min-width:640px){.vtext{display:block}}
+@keyframes kb{to{transform:scale(1.08) translateY(-1.5%)}}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
+  linear-gradient(180deg,rgba(6,5,8,.45) 0%,rgba(6,5,8,.1) 32%,rgba(6,5,8,.85) 72%,var(--bg) 100%),
+  radial-gradient(80% 60% at 50% 100%,rgba(179,18,46,.35),transparent 70%)}
+.crack{position:absolute;z-index:-1;pointer-events:none;filter:drop-shadow(0 0 6px rgba(224,48,74,.9))}
+.crack path{fill:none;stroke:#ff3550;stroke-width:1.3;stroke-linecap:round;stroke-dasharray:300;stroke-dashoffset:300;animation:crk 2.2s 1s ease-out forwards}
+@keyframes crk{to{stroke-dashoffset:0}}
+.vtext{display:none;position:absolute;right:12px;top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font-family:var(--display);letter-spacing:.6em;font-size:10px;color:rgba(236,230,238,.35);z-index:0}
+.hero-in{max-width:760px;margin:0 auto;width:100%}
+.kicker{font-family:var(--display);letter-spacing:.4em;font-size:10.5px;color:var(--blood2);margin-bottom:10px}
+.hero h1{font-family:var(--deco);font-weight:700;font-size:clamp(48px,14.5vw,118px);line-height:.92;letter-spacing:.02em;text-shadow:0 0 40px rgba(179,18,46,.6)}
+.hero h1 em{font-style:normal;color:var(--blood2)}
+.hero .sub{font-family:var(--serif);font-size:clamp(18px,4.6vw,24px);margin-top:12px;color:#f3e9ec;display:flex;align-items:center;gap:10px}
+.hero .sub::before{content:"";width:28px;height:1px;background:var(--blood2)}
+.hero .desc{color:#bdb1c1;margin-top:14px;font-size:14.5px;max-width:520px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.tags span{font-size:12px;padding:4px 10px;border:1px solid rgba(224,48,74,.35);border-radius:2px;color:#e9c9cf;background:rgba(179,18,46,.08)}
+.meta{display:flex;gap:18px;margin-top:20px;font-size:12.5px;color:var(--mute);flex-wrap:wrap}
+.meta b{color:#fff;font-weight:700}
+.cta{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:4px;font-weight:700;font-size:14.5px;text-decoration:none;transition:.2s}
+.btn.red{background:linear-gradient(135deg,var(--blood),#6a0919);box-shadow:0 8px 30px -8px rgba(179,18,46,.8),inset 0 0 0 1px rgba(255,255,255,.08)}
+.btn.red::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-20deg);animation:shine 4s ease-in-out infinite}
+@keyframes shine{0%,70%{left:-60%}100%{left:130%}}
+.btn.red:hover{transform:translateY(-2px)}
+.btn.ghost{border:1px solid rgba(200,168,96,.35);background:rgba(255,255,255,.02);color:#e7d9b5}
+.btn.ghost:hover{border-color:var(--gold)}
+.scrollcue{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font-size:11px;letter-spacing:.2em;color:var(--dim);display:flex;flex-direction:column;align-items:center;gap:6px}
+.scrollcue i{width:1px;height:26px;background:linear-gradient(var(--blood2),transparent);animation:drip 2s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* sections */
+section{padding:70px 22px;max-width:960px;margin:0 auto;position:relative}
+.sh{margin-bottom:28px;position:relative}
+.sh::before{content:attr(data-n);position:absolute;right:-6px;top:-34px;font-family:var(--deco);font-size:110px;line-height:1;color:rgba(179,18,46,.07);pointer-events:none}
+.sh .no{font-family:var(--display);color:var(--blood2);letter-spacing:.32em;font-size:10.5px;display:flex;align-items:center;gap:8px}
+.sh .no::after{content:"";flex:0 0 36px;height:1px;background:linear-gradient(90deg,var(--blood2),transparent)}
+.sh h2{font-family:var(--serif);font-size:clamp(26px,7vw,36px);font-weight:700;margin-top:6px;line-height:1.3}
+.sh p{color:var(--mute);font-size:14px;margin-top:6px}
+.orn{display:flex;align-items:center;justify-content:center;gap:12px;max-width:960px;margin:0 auto;padding:0 22px;color:rgba(200,168,96,.55);position:relative;z-index:1}
+.orn::before,.orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(179,18,46,.55))}
+.orn::after{background:linear-gradient(270deg,transparent,rgba(179,18,46,.55))}
+.orn svg{width:46px;height:20px}
+
+/* gothic frame corners */
+.frame{position:relative}
+.frame::before,.frame::after{content:"";position:absolute;width:14px;height:14px;border:1px solid rgba(200,168,96,.55);pointer-events:none;z-index:3}
+.frame::before{top:6px;left:6px;border-right:0;border-bottom:0}
+.frame::after{bottom:6px;right:6px;border-left:0;border-top:0}
+
+/* prologue */
+.intro{display:grid;gap:18px}
+.intro-img{border-radius:4px;aspect-ratio:16/10;border:1px solid var(--line)}
+.type{font-family:var(--serif);font-size:clamp(17px,4.4vw,21px);line-height:2;min-height:8.5em;color:#eadfe3}
+.type .cur{display:inline-block;width:2px;height:1em;background:var(--blood2);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.intro .replay{font-size:12.5px;color:var(--dim);justify-self:start;border-bottom:1px dashed var(--dim)}
+
+/* world */
+.world{display:grid;gap:16px}
+.wcard{display:grid;grid-template-columns:1fr;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--panel)}
+.wcard .ph{aspect-ratio:16/9}
+.wcard .tx{padding:18px}
+.wcard .tx small{font-family:var(--display);color:var(--blood2);letter-spacing:.3em;font-size:10.5px}
+.wcard h3{font-family:var(--serif);font-size:20px;margin:2px 0 6px}
+.wcard p{color:var(--mute);font-size:14px}
+@media(min-width:720px){.wcard{grid-template-columns:1.1fr 1fr}.wcard:nth-child(even) .ph{order:2}.wcard .ph{aspect-ratio:auto;min-height:230px}.wcard .tx{align-self:center;padding:26px}}
+
+/* roster */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.chip{font-size:13px;padding:7px 14px;border-radius:2px;border:1px solid var(--line);color:var(--mute);transition:.2s}
+.chip.on{border-color:var(--blood);color:#fff;background:rgba(179,18,46,.2)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media(min-width:640px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:880px){.grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.card{position:relative;border-radius:4px;overflow:hidden;aspect-ratio:3/4.3;border:1px solid var(--line);text-align:left;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card .ph{position:absolute;inset:0}
+.card .ph>img{transition:transform .5s}
+.card:hover{transform:translateY(-3px);border-color:var(--c);box-shadow:0 14px 30px -14px var(--c)}
+.card:hover .ph>img{transform:scale(1.05)}
+.card .ov{position:absolute;inset:auto 0 0 0;padding:40px 12px 12px;background:linear-gradient(0deg,rgba(6,5,8,.96),rgba(6,5,8,.6) 60%,transparent);z-index:2}
+.card .ep{font-size:10.5px;color:color-mix(in srgb,var(--c) 70%,#fff);letter-spacing:.05em}
+.card .nm{font-family:var(--serif);font-size:19px;font-weight:700;line-height:1.2}
+.card .rl{font-size:11.5px;color:var(--mute);margin-top:2px}
+.card .bdg{position:absolute;top:10px;right:10px;font-size:10.5px;padding:3px 8px;border-radius:2px;background:rgba(6,5,8,.7);border:1px solid color-mix(in srgb,var(--c) 60%,transparent);z-index:2}
+.card .num{position:absolute;top:8px;left:12px;font-family:var(--display);font-size:11px;color:rgba(236,230,238,.55);z-index:2;letter-spacing:.1em}
+.card.hide{display:none}
+
+.rank{margin-top:34px;padding:22px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}
+.rank h3{font-family:var(--serif);font-size:18px}
+.rank p.s{font-size:12.5px;color:var(--dim);margin-bottom:14px}
+.bar{display:grid;grid-template-columns:58px minmax(0,1fr) 52px;align-items:center;gap:10px;font-size:13px;margin:7px 0}
+.bar .t{height:8px;border-radius:1px;background:#1d1823;overflow:hidden}
+.bar .t i{display:block;height:100%;width:0;background:var(--c);transition:width 1.2s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 12px var(--c)}
+.bar .v{color:var(--mute);text-align:right;font-variant-numeric:tabular-nums}
+
+/* relation map */
+.map{position:relative;border:1px solid var(--line);border-radius:4px;background:radial-gradient(60% 60% at 50% 50%,rgba(179,18,46,.14),transparent 70%),var(--panel);padding:8px}
+.map svg{width:100%;height:auto;display:block;max-width:560px;margin:0 auto}
+.map .edge{stroke-width:1.6;opacity:.55;transition:.25s}
+.map .elab{font-size:10px;fill:#d9cbd3;paint-order:stroke;stroke:#120f16;stroke-width:4px;transition:.25s}
+.map .node{cursor:pointer}
+.map .node text{font-family:var(--serif);font-size:12px;fill:#fff;text-anchor:middle;paint-order:stroke;stroke:#120f16;stroke-width:3px}
+.map.focus .edge,.map.focus .elab{opacity:.08}
+.map.focus .edge.on{opacity:1;stroke-width:2.6}
+.map.focus .elab.on{opacity:1}
+.map.focus .node{opacity:.35}
+.map.focus .node.on{opacity:1}
+.legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font-size:12px;color:var(--mute);padding:8px 0 10px}
+.legend i{display:inline-block;width:16px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.maphint{text-align:center;font-size:12px;color:var(--dim);padding-bottom:8px}
+
+/* panels */
+.panel{border:1px solid var(--line);border-radius:4px;background:linear-gradient(180deg,rgba(179,18,46,.06),transparent 40%),var(--panel);padding:24px 20px;position:relative;overflow:hidden}
+
+/* quiz */
+.qtop{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:8px;font-family:var(--display);letter-spacing:.15em}
+.qprog{height:3px;background:#221c27;overflow:hidden;margin-bottom:20px}
+.qprog i{display:block;height:100%;background:linear-gradient(90deg,var(--blood),var(--blood2));transition:width .4s}
+.qq{font-family:var(--serif);font-size:clamp(19px,5vw,23px);margin-bottom:16px;line-height:1.5}
+.opts{display:grid;gap:8px}
+.opts.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.opt{text-align:left;padding:13px 15px;border:1px solid var(--line);border-radius:3px;background:rgba(255,255,255,.02);font-size:14.5px;transition:.18s}
+.opt:hover{border-color:var(--blood);background:rgba(179,18,46,.12)}
+.opt:active{transform:scale(.98)}
+.fade{animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.start{text-align:center;padding:10px 0}
+.start .big{font-family:var(--deco);font-size:46px;color:var(--blood2);line-height:1}
+.start p{color:var(--mute);margin:10px 0 18px;font-size:14px}
+.res{display:grid;gap:18px}
+@media(min-width:640px){.res{grid-template-columns:220px minmax(0,1fr);align-items:start}}
+.res .ph{aspect-ratio:3/4;border-radius:4px;border:1px solid var(--c)}
+.res .lbl{font-size:12px;color:var(--dim);letter-spacing:.1em}
+.res h3{font-family:var(--serif);font-size:28px;line-height:1.2}
+.res h3 small{display:block;font-size:13px;color:color-mix(in srgb,var(--c) 70%,#fff);font-family:var(--sans);margin-bottom:4px}
+.res p{color:#d6ccd8;font-size:14.5px;margin-top:10px}
+.res .match{margin-top:14px;font-size:13px;color:var(--mute)}
+.res .match b{color:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.sm{font-size:13px;padding:9px 14px;border-radius:3px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.sm:hover{border-color:var(--blood)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#1e1922;border:1px solid var(--blood);padding:10px 16px;border-radius:4px;font-size:13.5px;opacity:0;transition:.3s;z-index:120;pointer-events:none;width:max-content;max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+/* id card */
+.form{display:flex;gap:8px;flex-wrap:wrap}
+.form input{flex:1;min-width:0;background:#0a080d;border:1px solid var(--line);border-radius:3px;padding:12px 14px;color:#fff;font:inherit;font-size:16px;outline:none}
+.form input:focus{border-color:var(--blood)}
+.idcard{margin-top:20px;border-radius:6px;padding:22px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,#17111b,#0b090e 60%),#0b090e;border:1px solid rgba(200,168,96,.35);
+  box-shadow:0 20px 50px -20px rgba(179,18,46,.6), inset 0 0 0 6px rgba(6,5,8,.6), inset 0 0 0 7px rgba(200,168,96,.18)}
+.idcard::after{content:"VII";position:absolute;right:-6px;bottom:-34px;font-family:var(--deco);font-size:150px;color:rgba(179,18,46,.07);line-height:1}
+.idcard .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:1px solid rgba(200,168,96,.25);padding-bottom:12px;margin-bottom:14px}
+.idcard .hd .t{font-family:var(--display);letter-spacing:.2em;font-size:10.5px;color:var(--gold)}
+.idcard .hd .t b{display:block;font-family:var(--serif);letter-spacing:0;font-size:16px;color:#fff;margin-top:2px}
+.seal{width:62px;height:62px;border-radius:50%;border:2px solid var(--blood2);color:var(--blood2);display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-weight:700;font-size:11px;line-height:1.15;text-align:center;transform:rotate(-12deg);opacity:.85;flex:none}
+.idname{font-family:var(--serif);font-size:30px;font-weight:700;line-height:1.1;word-break:break-all}
+.idname small{display:block;font-size:13px;color:var(--gold);font-family:var(--sans);font-weight:500;margin-bottom:4px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;margin-top:16px;position:relative;z-index:1}
+.fields div small{display:block;font-size:10.5px;color:var(--dim);letter-spacing:.1em}
+.fields div span{font-size:14.5px}
+.fields .full{grid-column:1/-1}
+.idcard .mentor{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px dashed rgba(200,168,96,.25);position:relative;z-index:1}
+.idcard .mentor .ph{width:46px;height:46px;border-radius:50%;flex:none;border:1px solid var(--c)}
+.idcard .mentor .ph>span{font-size:8px;letter-spacing:.1em}
+.idcard .mentor p{font-size:13px;color:var(--mute);min-width:0}
+.idcard .mentor p b{color:#fff}
+.empty{color:var(--dim);font-size:13.5px;text-align:center;padding:24px 0 6px}
+
+/* draw */
+.draw{display:grid;gap:18px;justify-items:center}
+.flip{width:min(300px,78vw);aspect-ratio:3/4.4;perspective:1200px;cursor:pointer}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .8s cubic-bezier(.3,.8,.3,1);transform-style:preserve-3d}
+.flip.open .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;border-radius:6px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border:1px solid rgba(200,168,96,.4)}
+.flip .f{background:repeating-linear-gradient(45deg,rgba(200,168,96,.05) 0 2px,transparent 2px 14px),radial-gradient(circle at 50% 45%,rgba(179,18,46,.45),transparent 60%),#0d0a10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.flip .f .sig{width:96px;height:96px;border:1px solid rgba(200,168,96,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--deco);font-size:30px;color:var(--gold);box-shadow:0 0 40px rgba(179,18,46,.5);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 70px rgba(224,48,74,.8)}}
+.flip .f p{font-family:var(--serif);color:#e7d9b5;font-size:15px}
+.flip .f small{color:var(--dim);font-size:12px}
+.flip .b{transform:rotateY(180deg)}
+.flip .b .ph{position:absolute;inset:0}
+.flip .b .ov{position:absolute;inset:auto 0 0 0;padding:60px 16px 16px;background:linear-gradient(0deg,rgba(6,5,8,.97),rgba(6,5,8,.7) 60%,transparent)}
+.flip .b .nm{font-family:var(--serif);font-size:22px;font-weight:700}
+.flip .b .ep{font-size:11.5px;color:color-mix(in srgb,var(--c) 70%,#fff)}
+.flip .b .q{font-family:var(--serif);font-size:14.5px;margin-top:8px;line-height:1.6;color:#efe6ea}
+.fortune{width:100%;max-width:520px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;opacity:0;transition:.5s .4s}
+.fortune.on{opacity:1}
+.fortune div{border:1px solid var(--line);border-radius:3px;padding:10px 6px;text-align:center;background:rgba(255,255,255,.02)}
+.fortune small{display:block;font-size:10.5px;color:var(--dim)}
+.fortune span{font-size:13px}
+.fan{font-size:11.5px;color:var(--dim);text-align:center}
+
+/* modal */
+.modal{position:fixed;inset:0;z-index:80;display:none}
+.modal.on{display:block}
+.modal .scrim{position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);animation:fi .25s}
+@keyframes fi{from{opacity:0}}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:92svh;overflow-y:auto;overflow-x:hidden;background:var(--bg2);border-radius:14px 14px 0 0;border-top:1px solid var(--c,#b3122e);animation:up .35s cubic-bezier(.2,.8,.2,1);overscroll-behavior:contain}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+@media(min-width:760px){.sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:min(860px,94vw);max-height:88vh;border-radius:8px;border:1px solid var(--c);animation:pop .3s}
+  @keyframes pop{from{opacity:0;transform:translate(-50%,-46%)}}}
+.close{position:sticky;top:10px;float:right;margin:10px 10px 0 0;width:36px;height:36px;border-radius:50%;background:rgba(6,5,8,.75);border:1px solid var(--line);font-size:18px;z-index:5}
+.mhero{display:grid;gap:0}
+@media(min-width:760px){.mhero{grid-template-columns:330px minmax(0,1fr)}}
+.mimg{aspect-ratio:3/4}
+@media(max-width:759px){.mimg{aspect-ratio:4/4.4}}
+.thumbs{display:flex;gap:6px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none}
+.thumbs::-webkit-scrollbar{display:none}
+.thumbs button{width:52px;height:52px;border-radius:3px;overflow:hidden;flex:none;border:1px solid var(--line);opacity:.6}
+.thumbs button.on{opacity:1;border-color:var(--c)}
+.thumbs .ph{width:100%;height:100%}
+.thumbs .ph>span{font-size:0}
+.thumbs .ph>span svg{width:50%}
+.mbody{padding:18px 20px 30px}
+.mbody .ep{font-size:12.5px;color:color-mix(in srgb,var(--c) 70%,#fff);letter-spacing:.05em}
+.mbody h3{font-family:var(--serif);font-size:32px;line-height:1.15}
+.mbody h3 small{font-family:var(--display);font-size:13px;letter-spacing:.25em;color:var(--dim);margin-left:8px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.pills span{font-size:12px;padding:4px 10px;border-radius:2px;background:#1b1620;border:1px solid var(--line)}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0}
+.kv div{background:#100d14;border:1px solid var(--line);border-radius:3px;padding:10px 12px}
+.kv small{display:block;font-size:10.5px;color:var(--dim)}
+.kv b{font-family:var(--serif);font-size:16px;color:color-mix(in srgb,var(--c) 55%,#fff)}
+.blk{margin-top:16px}
+.blk h4{font-size:11.5px;letter-spacing:.2em;color:var(--dim);margin-bottom:4px;font-weight:500}
+.blk p{font-size:14.5px;color:#ddd3df}
+.likes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:16px}
+.likes div{border-radius:3px;padding:10px 12px;font-size:13.5px}
+.likes .y{background:rgba(120,200,150,.07);border:1px solid rgba(120,200,150,.2)}
+.likes .n{background:rgba(224,48,74,.07);border:1px solid rgba(224,48,74,.22)}
+.likes small{display:block;font-size:11px;color:var(--dim);margin-bottom:2px}
+.rel{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.rel button{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:99px;border:1px solid var(--line);font-size:13px;background:#100d14}
+.rel button:hover{border-color:var(--c2)}
+.rel .ph{width:28px;height:28px;border-radius:50%}
+.rel .ph>span{font-size:0}.rel .ph>span svg{display:none}
+.rel em{font-style:normal;color:var(--dim);font-size:12px}
+
+footer{padding:60px 22px 70px;text-align:center;color:var(--dim);font-size:12.5px;margin-top:30px}
+footer .lg{font-family:var(--deco);font-size:24px;color:var(--ink);letter-spacing:.06em;margin-bottom:4px}
+footer .lg b{color:var(--blood2)}
+footer .lm{font-family:var(--display);letter-spacing:.4em;font-size:10px;color:var(--blood2);margin-bottom:16px}
+footer p{margin:4px 0}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ================= OPENING ================= */
+#op{position:fixed;inset:0;z-index:200;background:#000;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;cursor:default}
+#op.out{animation:opOut 1.4s ease forwards}
+@keyframes opOut{0%{opacity:1;filter:none}100%{opacity:0;filter:blur(6px) brightness(2)}}
+#op.gone{display:none}
+#op .L{position:absolute;inset:0}
+#opCv{position:absolute;inset:0;width:100%;height:100%;z-index:6;pointer-events:none}
+.skip{position:absolute;top:14px;right:14px;z-index:20;font-size:12.5px;color:rgba(236,230,238,.55);padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:3px;letter-spacing:.05em}
+.skip:hover{color:#fff;border-color:var(--blood)}
+.ot{position:absolute;left:24px;right:24px;text-align:center;font-family:var(--serif);color:#efe6ea;opacity:0;transition:opacity 1.2s ease,filter 1.2s ease,letter-spacing 2.5s ease;z-index:10;text-shadow:0 0 20px rgba(0,0,0,.9)}
+.ot.on{opacity:1}
+.ot.blur{filter:blur(10px);opacity:0;letter-spacing:.4em}
+#ot1{top:56%;font-size:clamp(20px,5.6vw,30px)}
+#ot2{bottom:16%;font-size:clamp(16px,4.4vw,21px);line-height:1.8}
+/* ECG */
+#ecg{pointer-events:none;z-index:3;display:flex;align-items:center}
+#ecg svg{width:100%;height:120px;overflow:visible;transform:translateY(-40px)}
+#ecg path{fill:none;stroke:#e0304a;stroke-width:2;stroke-linejoin:round;filter:drop-shadow(0 0 6px #e0304a);stroke-dasharray:1400;stroke-dashoffset:1400}
+#ecg.run path{animation:ecg 3.2s linear forwards}
+@keyframes ecg{to{stroke-dashoffset:0}}
+#ecg.fade{transition:opacity 1.5s;opacity:0}
+/* memory fragments */
+.mem{position:absolute;z-index:5;font-family:var(--serif);color:#d8cbd2;font-size:clamp(15px,4vw,19px);opacity:0;transition:opacity 1s, filter 2s, transform 3s, letter-spacing 2s;white-space:nowrap}
+.mem.on{opacity:.85}
+.mem.gone{opacity:0;filter:blur(12px);transform:translateY(-30px) scale(1.2);letter-spacing:.5em}
+/* reaper scene */
+#scene{z-index:2;opacity:0;transition:opacity 2.4s ease}
+#scene.on{opacity:1}
+#scene .half{position:absolute;inset:0;transition:transform 1.8s cubic-bezier(.15,.85,.25,1),opacity 1.8s ease}
+#scene .half.a{clip-path:polygon(0 0,100% 0,100% 14%,0 86%)}
+#scene .half.b{clip-path:polygon(0 86%,100% 14%,100% 100%,0 100%)}
+#scene.split .half.a{transform:translate(-5%,-7%) rotate(-2.5deg);opacity:.0}
+#scene.split .half.b{transform:translate(5%,7%) rotate(2.5deg);opacity:.0}
+#scene .art{position:absolute;inset:0;overflow:hidden}
+#scene .art .zoom{position:absolute;inset:-4%;animation:none}
+#scene.on .art .zoom{animation:creep 9s ease-out forwards}
+@keyframes creep{from{transform:scale(1.18)}to{transform:scale(1.02)}}
+#scene .art img,#scene .art svg.sil{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+#scene .art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.1) 40%,rgba(0,0,0,.75)),radial-gradient(70% 55% at 50% 45%,transparent,rgba(0,0,0,.7))}
+.hint{position:absolute;left:0;right:0;bottom:7%;text-align:center;z-index:12;font-size:12.5px;letter-spacing:.25em;color:rgba(255,190,200,.85);opacity:0;transition:.8s}
+.hint.on{opacity:1;animation:hb 1.6s ease-in-out infinite}
+@keyframes hb{50%{opacity:.35}}
+/* slash */
+#slash{z-index:8;pointer-events:none}
+#slash svg{width:100%;height:100%}
+#slash path{fill:none;stroke:url(#sg);stroke-width:5;stroke-linecap:round;filter:url(#glow);stroke-dasharray:1;stroke-dashoffset:1;opacity:0}
+#slash.go path{opacity:1;animation:cut .26s cubic-bezier(.6,0,.2,1) forwards,cutfade 1.3s .35s ease forwards}
+@keyframes cut{to{stroke-dashoffset:0}}
+@keyframes cutfade{0%{stroke-width:5;opacity:1}30%{stroke-width:14;opacity:.9}100%{stroke-width:40;opacity:0}}
+#flash{z-index:9;background:radial-gradient(circle at 50% 50%,#fff,#ff4060 35%,#5a0613 70%,#000);opacity:0;pointer-events:none}
+#flash.go{animation:flash 1.6s ease forwards}
+@keyframes flash{0%{opacity:0}6%{opacity:1}40%{opacity:.55}100%{opacity:0}}
+#op.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}30%,50%,70%{transform:translate(-7px,3px)}40%,60%{transform:translate(7px,-3px)}}
+#void{z-index:1;opacity:0;transition:opacity 2s;background:radial-gradient(60% 50% at 50% 45%,rgba(122,11,31,.55),transparent 70%),#050003}
+#void.on{opacity:1}
+/* sigil + title */
+#sigil{pointer-events:none;z-index:11;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 1.6s, transform 2.5s cubic-bezier(.2,.8,.2,1);transform:scale(.7)}
+#sigil.on{opacity:1;transform:scale(1)}
+#sigil.up{transform:translateY(-22vh) scale(.62)}
+#sigil svg{width:min(250px,64vw);height:auto;overflow:visible;filter:drop-shadow(0 0 18px rgba(224,48,74,.7))}
+#sigil .ring{transform-origin:100px 100px;animation:spin 30s linear infinite}
+#sigil .ring2{transform-origin:100px 100px;animation:spin 18s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+#final{z-index:12;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;padding-top:18vh;opacity:0;pointer-events:none;transition:opacity 1.5s}
+#final.on{opacity:1;pointer-events:auto}
+#final .stamp{font-family:var(--serif);color:var(--blood2);border:1.5px solid var(--blood2);padding:5px 14px;font-size:13px;letter-spacing:.2em;transform:rotate(-4deg) scale(2);opacity:0;transition:transform .35s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+#final.on .stamp{transform:rotate(-4deg) scale(1);opacity:1;transition-delay:.4s}
+#final h2{font-family:var(--deco);font-size:clamp(44px,13vw,96px);line-height:1;margin-top:20px;text-shadow:0 0 40px rgba(224,48,74,.7);letter-spacing:.02em}
+#final h2 b{color:var(--blood2)}
+#final .s{font-family:var(--serif);font-size:18px;margin-top:10px;color:#f1e6ea}
+#final .n{font-size:13.5px;color:var(--mute);margin-top:14px;line-height:1.8}
+#final .btn{margin-top:26px}
+
+/* sound toggle + gate */
+.snd{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.14em;font-family:var(--display);color:rgba(236,230,238,.7);padding:8px 12px;border:1px solid rgba(255,255,255,.14);border-radius:3px;background:rgba(6,5,8,.6)}
+.snd .eq{display:flex;align-items:flex-end;gap:2px;height:12px}
+.snd .eq i{width:2px;height:3px;background:currentColor;border-radius:1px}
+.snd.on{color:#ffb3bf;border-color:rgba(224,48,74,.55)}
+.snd.on .eq i{animation:eq 1.1s ease-in-out infinite}
+.snd.on .eq i:nth-child(2){animation-delay:-.3s}.snd.on .eq i:nth-child(3){animation-delay:-.6s}.snd.on .eq i:nth-child(4){animation-delay:-.15s}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+.snd .st::after{content:"OFF"}.snd.on .st::after{content:"ON"}
+#sndOp{position:absolute;top:14px;left:14px;z-index:20}
+#snd{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:55;box-shadow:0 6px 20px rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#gate{z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:radial-gradient(60% 40% at 50% 45%,rgba(122,11,31,.25),transparent 70%),#000;transition:opacity 1s}
+#gate.hide{opacity:0;pointer-events:none}
+#gate .g0{font-family:var(--display);letter-spacing:.45em;font-size:10px;color:var(--blood2);margin-bottom:10px}
+#gate .g1{font-family:var(--deco);font-size:clamp(34px,10vw,58px);letter-spacing:.03em}
+#gate .g1 b{color:var(--blood2)}
+#gate .g2{font-family:var(--serif);color:var(--mute);margin:14px 0 28px;font-size:14.5px;line-height:1.8}
+#gate .gb{display:flex;flex-direction:column;gap:6px;width:min(260px,78vw)}
+#gate .gb .btn{justify-content:center}
+#gate .gn{color:var(--dim);font-size:13px;padding:10px}
+#gate .gn:hover{color:#fff}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- ================= OPENING ================= -->
+<div id="op" aria-label="인트로">
+  <div class="L" id="void"></div>
+  <div class="L" id="scene">
+    <div class="half a"><div class="art"><div class="zoom" data-art></div></div></div>
+    <div class="half b"><div class="art"><div class="zoom" data-art></div></div></div>
+  </div>
+  <div class="L" id="ecg"><svg viewBox="0 0 400 120" preserveAspectRatio="none"><path d="M0,60 L60,60 L72,60 L78,38 L84,82 L92,10 L100,104 L106,60 L150,60 L162,60 L168,44 L174,76 L182,22 L190,96 L196,60 L240,60 L250,60 L255,52 L260,68 L266,46 L272,72 L278,60 L400,60"/></svg></div>
+  <div class="L" id="slash"><svg viewBox="0 0 100 100" preserveAspectRatio="none">
+    <defs><linearGradient id="sg" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#ff5a70"/><stop offset="1" stop-color="#b3122e"/></linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <path pathLength="1" vector-effect="non-scaling-stroke" d="M112,4 Q58,34 -12,96"/></svg></div>
+  <div class="L" id="flash"></div>
+  <canvas id="opCv"></canvas>
+  <div class="L" id="sigil"><svg viewBox="0 0 200 200">
+    <defs><path id="rp" d="M100,100 m-84,0 a84,84 0 1,1 168,0 a84,84 0 1,1 -168,0"/></defs>
+    <g class="ring"><circle cx="100" cy="100" r="92" fill="none" stroke="#c8a860" stroke-opacity=".55"/><circle cx="100" cy="100" r="76" fill="none" stroke="#c8a860" stroke-opacity=".35"/>
+      <text font-family="Cinzel" font-size="9.5" letter-spacing="3.4" fill="#e7d9b5" fill-opacity=".8"><textPath href="#rp">REQUIEM AETERNAM · DISTRICT VII · LUX PERPETUA · MEIKAI ·</textPath></text></g>
+    <g class="ring2" stroke="#e0304a" fill="none" stroke-width="1.3"><polygon points="100,34 157,133 43,133"/><polygon points="100,166 43,67 157,67"/></g>
+    <circle cx="100" cy="100" r="40" fill="#0a0003" stroke="#e0304a" stroke-width="1.5"/>
+    <text x="100" y="110" text-anchor="middle" font-family="Cinzel Decorative, Cinzel" font-size="28" fill="#fff">VII</text></svg></div>
+  <div class="ot" id="ot1"></div>
+  <div class="ot" id="ot2"></div>
+  <div class="hint" id="hint">화면을 터치해 손을 뻗는다</div>
+  <div class="L" id="final">
+    <div class="stamp">第七境界區 · 신입 사신 등록</div>
+    <h2>RE<b>:</b>QUIEM</h2>
+    <div class="s">사신들의 진혼곡</div>
+    <div class="n">이름 없는 영혼이여,<br>오늘부터 당신은 죽음을 인도하는 자.</div>
+    <button class="btn red" id="enter">명계로 들어가기</button>
+  </div>
+  <button class="skip" id="skip">건너뛰기 ›</button>
+  <button class="snd" id="sndOp" aria-label="배경음악 켜기/끄기"><span class="eq"><i></i><i></i><i></i><i></i></span>BGM <span class="st"></span></button>
+  <div class="L" id="gate">
+    <div class="g0">REQUIEM FOR THE REAPERS</div>
+    <div class="g1">RE<b>:</b>QUIEM</div>
+    <div class="g2">이 사이트에는 배경음악과 효과음이 있어요.<br>🎧 이어폰을 끼고 들으면 더 좋아요.</div>
+    <div class="gb"><button class="btn red" id="gOn">♪ 소리 켜고 입장</button><button class="gn" id="gOff">소리 없이 입장</button></div>
+  </div>
+</div>
+
+<canvas id="souls"></canvas>
+<div id="prog"></div>
+<button class="snd" id="snd" aria-label="배경음악 켜기/끄기"><span class="eq"><i></i><i></i><i></i><i></i></span>BGM <span class="st"></span></button>
+
+<nav>
+  <a class="logo" href="#top">RE<b>:</b>QUIEM</a>
+  <button class="burger" id="burger" aria-label="메뉴"><i></i><i></i><i></i></button>
+</nav>
+<div id="menu">
+  <a href="#intro"><span class="rn">I</span><span class="kr">프롤로그</span><span class="la">INTROITUS</span></a>
+  <a href="#world"><span class="rn">II</span><span class="kr">세계관</span><span class="la">KYRIE</span></a>
+  <a href="#cast"><span class="rn">III</span><span class="kr">사신 도감</span><span class="la">DIES IRAE</span></a>
+  <a href="#relation"><span class="rn">IV</span><span class="kr">관계도</span><span class="la">RECORDARE</span></a>
+  <a href="#test"><span class="rn">V</span><span class="kr">적성 테스트</span><span class="la">CONFUTATIS</span></a>
+  <a href="#idcard"><span class="rn">VI</span><span class="kr">사신 등록증</span><span class="la">OFFERTORIUM</span></a>
+  <a href="#draw"><span class="rn">VII</span><span class="kr">오늘의 동행</span><span class="la">LUX AETERNA</span></a>
+  <button class="replay" id="replayOp">↺ 인트로 다시 보기</button>
+</div>
+
+<header class="hero" id="top">
+  <div class="bg ph" id="heroBg" style="--c:#b3122e"><span></span></div>
+  <svg class="crack" style="left:0;top:18%;width:140px;height:220px" viewBox="0 0 140 220"><path d="M0,10 L30,40 L22,70 L55,95 L48,130 L80,150 L74,190 L100,215 M30,40 L60,34 M55,95 L88,88 M80,150 L112,160"/></svg>
+  <svg class="crack" style="right:0;bottom:30%;width:110px;height:170px" viewBox="0 0 110 170"><path d="M110,0 L84,30 L92,58 L64,80 L70,112 L40,136 L46,168 M84,30 L58,24 M64,80 L36,74 M40,136 L14,128"/></svg>
+  <div class="vtext">REQUIEM AETERNAM DONA EIS</div>
+  <div class="hero-in">
+    <div class="kicker">THE SEVENTH BORDER DISTRICT</div>
+    <h1>RE<em>:</em>QUIEM</h1>
+    <div class="sub">사신들의 진혼곡</div>
+    <p class="desc">죽음 뒤, 이름도 과거도 잃은 당신. 드문 적성으로 선택되어 명계 <b>제7경계구</b>의 신입 사신이 되었다. 구원할 것인가, 심판할 것인가 — 아홉 명의 선배 사신과 함께 그 답을 찾아라.</p>
+    <div class="tags"><span>#다인캐</span><span>#사신</span><span>#현대판타지</span><span>#악령</span><span>#인외</span><span>#초능력</span></div>
+    <div class="meta"><span>대화량 <b>1.9만+</b></span><span>등장 사신 <b>10명</b></span><span>제작 <b>⭐_MEI</b></span></div>
+    <div class="cta">
+      <a class="btn red" href="https://zeta-ai.io/ko/plots/97e02420-39a0-4ee7-9dfd-c32551bff3aa/profile?share_id=vd72kwj8" target="_blank" rel="noopener">⚔ 제타에서 플레이하기</a>
+      <a class="btn ghost" href="#test">내 사신 적성 알아보기</a>
+    </div>
+  </div>
+  <div class="scrollcue">진혼곡이 시작된다<i></i></div>
+</header>
+
+<main>
+<section id="intro">
+  <div class="sh reveal" data-n="I"><div class="no">MOVEMENT I · INTROITUS</div><h2>검은 회랑에서 눈을 뜨다</h2></div>
+  <div class="intro reveal">
+    <div class="intro-img ph frame" id="introImg" style="--c:#7a0b1f"><span></span></div>
+    <div class="type" id="type"></div>
+    <button class="replay" id="replay">↺ 다시 읽기</button>
+  </div>
+</section>
+
+<div class="orn" data-orn></div>
+
+<section id="world">
+  <div class="sh reveal" data-n="II"><div class="no">MOVEMENT II · KYRIE</div><h2>현세와 명계, 그 경계</h2><p>사신은 목숨을 빼앗는 자가 아니다. 영혼을 인도하는 죽음의 관리인이다.</p></div>
+  <div class="world" id="worldList"></div>
+</section>
+
+<div class="orn" data-orn></div>
+
+<section id="cast">
+  <div class="sh reveal" data-n="III"><div class="no">MOVEMENT III · DIES IRAE</div><h2>제7경계구 사신 도감</h2><p>카드를 누르면 상세 프로필이 열립니다.</p></div>
+  <div class="filters reveal" id="filters">
+    <button class="chip on" data-f="all">전체 10</button>
+    <button class="chip" data-f="장검">🗡 장검</button>
+    <button class="chip" data-f="대낫">☾ 대낫</button>
+    <button class="chip" data-f="맨손">✊ 맨손</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="rank reveal frame" id="rank">
+    <h3>명계 근속 랭킹</h3>
+    <p class="s">사신으로 활동한 햇수 — 겉보기 나이에 속지 마세요.</p>
+    <div id="bars"></div>
+  </div>
+</section>
+
+<div class="orn" data-orn></div>
+
+<section id="relation">
+  <div class="sh reveal" data-n="IV"><div class="no">MOVEMENT IV · RECORDARE</div><h2>사신 관계도</h2><p>누가 누구와 손발이 맞고, 누가 누구와 부딪힐까?</p></div>
+  <div class="map reveal frame" id="map">
+    <div class="legend">
+      <span><i style="background:#c8a860"></i>신뢰</span><span><i style="background:#e0304a"></i>라이벌</span><span><i style="background:#7a6a85"></i>불화</span><span><i style="background:#f0a8c0"></i>단짝</span><span><i style="background:#7fb8d8"></i>협력</span>
+    </div>
+    <svg id="mapSvg" viewBox="0 0 400 400" role="img" aria-label="사신 관계도"></svg>
+    <div class="maphint">이름을 눌러 관계를 확인 · 한 번 더 누르면 프로필</div>
+  </div>
+</section>
+
+<div class="orn" data-orn></div>
+
+<section id="test">
+  <div class="sh reveal" data-n="V"><div class="no">MOVEMENT V · CONFUTATIS</div><h2>나와 닮은 사신은?</h2><p>7개의 질문으로 알아보는 사신 적성 검사.</p></div>
+  <div class="panel reveal frame" id="quiz"></div>
+</section>
+
+<div class="orn" data-orn></div>
+
+<section id="idcard">
+  <div class="sh reveal" data-n="VI"><div class="no">MOVEMENT VI · OFFERTORIUM</div><h2>신입 사신 등록증 발급</h2><p>생전의 이름은 잊혔다. 명계에서 불릴 새 이름을 적어 보세요.</p></div>
+  <div class="panel reveal frame">
+    <form class="form" id="idForm">
+      <input id="idInput" maxlength="12" placeholder="새 이름 (예: 하루, 류, 윤서…)" autocomplete="off">
+      <button class="btn red" type="submit">등록증 발급</button>
+    </form>
+    <div id="idOut"><div class="empty">이름을 입력하면 권능·무기·담당 선배가 배정됩니다.<br>같은 이름은 언제나 같은 결과가 나와요.</div></div>
+  </div>
+</section>
+
+<div class="orn" data-orn></div>
+
+<section id="draw">
+  <div class="sh reveal" data-n="VII"><div class="no">MOVEMENT VII · LUX AETERNA</div><h2>오늘의 동행 사신</h2><p>명부를 펼쳐 오늘 함께 임무를 나설 선배를 뽑아 보세요.</p></div>
+  <div class="draw reveal">
+    <div class="flip" id="flip" role="button" tabindex="0" aria-label="명부 펼치기">
+      <div class="in">
+        <div class="f"><div class="sig">VII</div><p>명부를 펼친다</p><small>터치해서 뽑기</small></div>
+        <div class="b" id="flipBack"></div>
+      </div>
+    </div>
+    <div class="fortune" id="fortune"></div>
+    <button class="sm" id="redraw" style="display:none">↺ 다시 뽑기</button>
+    <div class="fan">※ 동행 대사는 캐릭터 설정을 바탕으로 만든 팬메이드 문구입니다.</div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="orn" data-orn style="margin-bottom:28px"></div>
+  <div class="lg">RE<b>:</b>QUIEM</div>
+  <div class="lm">LIBERA ME</div>
+  <p>원작 플롯 「RE:QUIEM — 사신들의 진혼곡」 · 제작 ⭐_MEI (@Hoshino_mei)</p>
+  <p>캐릭터·이미지의 권리는 원작자에게 있으며, 이 페이지는 비공식 팬 소개 페이지입니다.</p>
+  <p style="margin-top:14px"><a href="https://zeta-ai.io/ko/plots/97e02420-39a0-4ee7-9dfd-c32551bff3aa/profile?share_id=vd72kwj8" target="_blank" rel="noopener">zeta에서 원작 보기 →</a></p>
+</footer>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="scrim" data-close></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const PID='97e02420-39a0-4ee7-9dfd-c32551bff3aa';
+const Z='https://image.zeta-ai.io/';
+const IMG={
+  cover:Z+'plot-cover-image/'+PID+'/9409fa02-18e9-4f85-8b7d-3ff30213bab0.png',
+  intro:[Z+'plot-intro-image/'+PID+'/019e1fa1-4fd3-416a-8f36-03c51b5cd84d.png?w=1080&q=90&f=webp',
+         Z+'plot-intro-image/'+PID+'/408ba435-2eec-4549-83aa-84f27baa172b.png?w=1080&q=90&f=webp'],
+  about:['ab095554-963b-4a12-8cf4-9abaafbdb12a.png','18ab3b12-5890-4c19-b55d-cdbbc9bdc0d0.png','6f47f134-1328-4b7e-a4ee-f45a0fd2c10b.png','ec413673-24a0-42b3-af25-afa7cbb33936.png']
+    .map(f=>Z+'plot-about-image/'+PID+'/'+f+'?w=1080&q=90&f=webp')
+};
+const prof=(dir,f,w)=>Z+'profile-image/'+PID+'/'+dir+'/'+f+'.png?w='+(w||640)+'&q=75&f=webp';
+const GLYPH={
+  '장검':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2l1.6 3v11h-3.2V5z"/><path d="M7.5 16h9M12 16v4.5M10.5 21.5h3"/></svg>',
+  '대낫':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 22L15 3"/><path d="M14.3 5C10 3.5 5 5.5 3 10c3.2-2.4 7.4-3 11-2"/></svg>',
+  '맨손':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 11V7.5a1.5 1.5 0 013 0V11M10 10V6a1.5 1.5 0 013 0v4M13 10V6.5a1.5 1.5 0 013 0V11M16 11V9a1.5 1.5 0 013 0v4a7 7 0 01-7 7h-1a5 5 0 01-5-5v-2.5a1.5 1.5 0 013 0"/></svg>',
+  'seal':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>'
+};
+const C=[
+ {k:'ab',n:'아비터',en:'ARBITER',ep:'명계의 심판자',c:'#d4203c',sex:'여',age:34,h:179,yr:263,role:'제7경계구 관리자',wt:'장검',w:'장검 「천관」',p:'봉쇄',
+  look:'허리 아래까지 흐르는 흑발과 적안, 날카로운 눈매. 흰 셔츠와 검은 넥타이 위로 정장 재킷과 상체 하네스. 오른손에 검붉은 균열이 남아 있다.',
+  ab:'영력 장벽으로 대상과 공간을 봉쇄·압축해 다수를 한꺼번에 제압한다. 평소엔 직접 나서지 않지만, 중대한 위기에는 반드시 칼을 뽑는다. 제7경계구 최강급.',
+  per:'냉철하고 위엄 있으며 감정을 드러내지 않는다. 불합리한 명령은 내리지 않지만 결과에 대한 책임은 엄격하게 묻는다. 지위가 아니라 판단과 행동으로 사람을 본다.',
+  like:'질서, 책임감, 조용한 시간',hate:'무책임, 불필요한 희생, 질서 파괴',
+  dir:'2a458669-fde9-4bb5-a008-aeca9948140b',im:['6da2465f-2bd3-48f7-af06-4a901ede5c88','e74eca54-87f3-4ce1-b8cd-751ec89a30e5','128e0c92-90ec-43d7-8c94-772257102866','9635fda3-92d6-4ba4-aff0-1898865ced1d','aab4a037-264e-4b90-ab43-25fcffe06c10'],
+  line:'오늘의 임무는 하나다. 책임질 수 있는 선택만 해라.',
+  res:'질서를 지키는 자. 감정보다 판단을 앞세우고, 맡은 일은 끝까지 책임지는 타입이에요. 주변은 당신을 조금 무서워하지만, 위기가 오면 모두가 당신을 찾습니다.'},
+ {k:'ar',n:'아르젠트',en:'ARGENT',ep:'은빛의 검',c:'#c9ccd6',sex:'여',age:29,h:173,yr:89,role:'신입 교육 · 전투',wt:'장검',w:'장검 「백선」',p:'검기',
+  look:'허리까지 내려오는 웨이브 은발, 금안, 차가운 인상. 정장에 검은 롱코트와 은빛 장식. 언제나 흐트러짐 없이 단정하다.',
+  ab:'장검에 영력을 모아 원거리 참격을 날린다. 위력과 사거리를 자유롭게 조절하며 연속 공격이 가능하다.',
+  per:'과묵하고 엄격한 완벽주의자. 이성과 원칙이 먼저이고, 같은 실수를 반복하는 걸 싫어한다. 인정한 상대에게는 말 대신 행동으로 신뢰를 보인다. 과거 가르치던 신입을 임무 중 잃은 뒤로 교육을 꺼리게 되었다.',
+  like:'검술 훈련, 규칙적인 생활, 책임감',hate:'무책임, 반복되는 실수, 불성실',
+  dir:'916133db-932a-4e9a-bb7b-606329aef4c2',im:['d7a34286-8a45-489f-8f33-c16774e5bc98','f622ab97-5204-4679-aa56-1e968c05a713','3829126a-4a5b-4f1f-966e-f585b74bc74b','d02781eb-e3fd-49b1-85ba-f1e9536184aa','ff9cb6f5-9d70-4da4-83c8-771ba7ee4e83'],
+  line:'자세가 흐트러졌다. …다시. 이번엔 제대로.',
+  res:'기준이 높은 완벽주의자. 말수는 적지만 행동으로 보여주는 타입이에요. 스스로에게 가장 엄격하고, 한 번 인정한 사람은 끝까지 지킵니다.'},
+ {k:'se',n:'셀레나',en:'SELENA',ep:'망자의 안식',c:'#4f78b8',sex:'여',age:25,h:165,yr:36,role:'망자 인도',wt:'대낫',w:'대낫 「유월」',p:'진정',
+  look:'남청색 단발과 회청색 눈동자, 창백한 피부, 온화한 인상. 흰 셔츠와 검은 넥타이, 짧은 정장 치마에 긴 정장 외투.',
+  ab:'망자의 공포와 원한, 폭주한 영력을 가라앉혀 대화할 틈을 만든다. 다만 기억이나 의지를 억지로 바꾸지는 못한다.',
+  per:'온화하고 배려 깊지만 신념은 단단하다. 망자를 "처리 대상"으로 보는 걸 싫어하고, 충분히 들은 뒤에는 부드러운 말투로도 자기 생각을 분명히 말한다. 강제 인도보다 스스로 받아들이는 안식을 믿는다.',
+  like:'조용한 장소, 진솔한 대화, 망자의 안식',hate:'강압, 불필요한 폭력, 슬픔을 가볍게 여기는 태도',
+  dir:'61bf895e-1a47-40ca-9b14-e70b93c1a3d7',im:['f4e70a5a-0b14-4410-b05b-b47c21b718b4','908028b9-351b-4a8e-8308-63d2c2df1acb','cac9d78f-ad71-4a94-b802-5957e28f4c0e','171f197c-ede0-4fcd-b4b6-07105a5306e8','98501e0c-7326-4e02-a118-dcfe0ccda342'],
+  line:'서두르지 않아도 괜찮아요. 오늘은 제가 곁에서 들을게요.',
+  res:'끝까지 들어주는 사람. 부드럽지만 꺾이지 않는 신념을 가졌어요. 누군가의 슬픔 앞에서 서두르지 않는 당신은, 가장 어려운 인도를 해낼 수 있는 사신입니다.'},
+ {k:'ca',n:'카르민',en:'CARMINE',ep:'붉은 처형자',c:'#ff3b1f',sex:'여',age:27,h:170,yr:112,role:'악귀 토벌',wt:'대낫',w:'대낫 「적월」',p:'화염',
+  look:'긴 진홍색 머리와 적안, 날카로운 눈매에 당당한 표정. 몸에 맞는 정장 위로 붉은 안감의 검은 코트.',
+  ab:'붉은 영혼의 불꽃을 만들고 다룬다. 대낫에 불길을 두르거나 넓게 방출할 수 있지만, 강한 공격일수록 영력 소모가 크다.',
+  per:'호전적이고 오만하며 직설적. 싸움을 즐기고 강한 상대에게 먼저 도전한다. 약한 상대엔 관심이 없지만 실력을 인정하면 존중한다. 자기 실수를 남 탓하지 않는다. 과거 살려 보낸 원령이 사람들을 해친 뒤로, 위험한 영혼에게 자비를 경계한다.',
+  like:'강자와의 대결, 실전, 실력 증명',hate:'비겁함, 변명, 악귀 방치',
+  dir:'5734b60a-4ae1-4b37-bf75-df427848c184',im:['eb6afc7c-d3a0-4311-a295-3e5c139d0158','07866a14-d113-4959-acc4-943af5aa8da4','ec5bb5a8-27c7-4914-80ce-04c4b52a805c','351df8da-ca2c-43a1-b437-ea921667c508','bd2923b9-0a07-4ceb-86f9-9ba6d3eb7eb4'],
+  line:'약한 놈은 관심 없어. 오늘은 네가 얼마나 버티나 보자고.',
+  res:'불꽃 같은 승부사. 돌려 말하지 않고, 강한 상대일수록 눈이 빛나는 타입이에요. 변명 대신 결과로 증명하는 당신, 전장에서 가장 믿음직한 등입니다.'},
+ {k:'je',n:'제트',en:'ZET',ep:'질주하는 사신',c:'#e09a3a',sex:'남',age:23,h:181,yr:12,role:'도주 영혼 추적',wt:'장검',w:'장검 「질풍」',p:'가속',
+  look:'헝클어진 짧은 갈색 머리와 호박색 눈, 탄탄한 체형. 검은 정장에 느슨하게 맨 넥타이, 걸친 재킷, 그리고 능글맞은 미소.',
+  ab:'순간적으로 이동·반응 속도를 끌어올려 추격, 회피, 연속 공격에 쓴다. 오래 유지하면 영력이 빠르게 바닥난다.',
+  per:'자유분방하고 능글맞은 장난꾸러기. 규칙과 간섭을 싫어하고 자기 판단을 믿는다. 하지만 위기 앞에선 누구보다 빨리 진지해진다. 중요한 추적에서 여러 번 놓친 뒤로 목표를 놓치는 것에 집착한다.',
+  like:'현세 구경, 추격전, 새로운 경험',hate:'간섭, 지루한 규칙, 목표를 놓치는 일',
+  dir:'815d45bc-1807-43d5-8862-b35da92fbc71',im:['38d84d80-7fdc-4435-963d-50aac1a0a39d','6baa0690-efd3-4102-8ed4-bb72a2b685c3','e35fef89-ed33-4647-923e-7a544ccbaa16','b590b0a6-309f-4419-93f1-0ee158ca80ff'],
+  line:'규칙? 나중에 읽자. 일단 따라와, 놓치기 전에!',
+  res:'멈추지 않는 자유로운 영혼. 새로운 것에 먼저 뛰어들고, 규칙보다 감을 믿는 타입이에요. 장난스러워 보여도 정말 중요한 순간엔 누구보다 빠르게 달려갑니다.'},
+ {k:'sp',n:'세피아',en:'SEPIA',ep:'망각의 기록자',c:'#9a6ad8',sex:'여',age:31,h:168,yr:184,role:'명계 기록 · 조사',wt:'맨손',w:'맨손 (영력 강화 격투)',p:'기억 읽기',
+  look:'단정하게 묶은 긴 흑발, 보랏빛 눈동자, 얇은 안경, 차가운 인상. 깔끔한 정장에 재킷.',
+  ab:'영혼에 닿아 생전의 기억과 대화를 읽어낸다. 경험하지 않은 일이나 지워진 기억은 읽을 수 없다. 전투에선 영력으로 강화한 맨손 격투를 쓴다.',
+  per:'이성적이고 침착하며 감정 표현이 적다. 사소한 변화도 놓치지 않는다. 묻는 말엔 정확히 답하고 쓸데없는 말은 먼저 꺼내지 않는다. 위로보다 사실에 근거한 조언을 한다. 수많은 기록을 관리하면서도, 자신의 생전 기록만은 한 번도 열어보지 않았다.',
+  like:'기록 정리, 조용한 서고, 논리적 대화',hate:'근거 없는 추측, 기록 훼손, 감정적 언쟁',
+  dir:'43d40a2a-4418-49f6-859a-e53de34b50d8',im:['24fd9512-5007-465a-964b-01ec99c8a592','6b89ff8d-c696-40b5-a395-ad04a546fb3b','9691497d-7048-4851-b192-73b49172c3bc','775867fe-f617-4c08-8b1d-2901c29fff26','78228bfd-e288-4cdc-b413-8309557a4859'],
+  line:'오늘 당신의 기록에 특이사항 없음. …아직은요.',
+  res:'사실을 읽는 관찰자. 감정에 휩쓸리기보다 근거를 찾고, 작은 변화를 먼저 알아채는 타입이에요. 당신의 차분한 한마디가 팀을 가장 정확한 답으로 이끕니다.'},
+ {k:'no',n:'녹스',en:'NOX',ep:'침묵의 집행자',c:'#a48ccf',sex:'여',age:26,h:166,yr:67,role:'위험 영혼 제압',wt:'맨손',w:'맨손',p:'중력',
+  look:'잿빛 연보라 단발, 금색과 보라색의 오드아이, 창백한 피부와 무표정. 정장 위에 장식 없는 검은 롱코트를 어깨에 걸쳤다.',
+  ab:'중력을 조종해 적을 짓누르거나 띄워 올리고, 중력을 응축한 주먹으로 내리친다. 다수의 악귀를 홀로 제압한 전적이 있다.',
+  per:'과묵하고 냉소적이며 무리 짓기를 꺼린다. 불필요한 대화와 감정적인 판단을 싫어하고, 사람을 행동과 실력으로 평가한다. 감정 표현은 서툴지만 위기에 처한 동료를 외면하지 않는다.',
+  like:'혼자 있는 시간, 정적, 효율적인 전투',hate:'소음, 수다, 감정에 휘둘리는 판단',
+  dir:'31653fa0-3711-4274-b6f1-9ba933961b31',im:['893827c9-3976-453a-b9f0-9a0e8258640c','22268f4e-202f-451a-aa9e-de20d4fff8c3','0fc34149-5575-4de5-83c2-0f27f250254f','29c06536-e17e-49f3-9693-965cff050cf3'],
+  line:'…시끄럽게 굴지만 않으면, 같이 가도 돼.',
+  res:'말보다 결과. 혼자가 편하고 군더더기를 싫어하는 효율주의자예요. 차가워 보여도, 동료가 위험할 때 가장 먼저 움직이는 건 바로 당신입니다.'},
+ {k:'lu',n:'루멘',en:'LUMEN',ep:'영혼의 빛',c:'#f3a6c2',sex:'여',age:22,h:158,yr:18,role:'영체 치료',wt:'맨손',w:'맨손 (호신 격투술)',p:'회복',
+  look:'분홍빛이 도는 연금발, 연녹색 눈, 작은 체구와 다정한 눈매. 정장에 흰 장식이 들어간 검은 재킷.',
+  ab:'손에서 영력을 발산해 자신과 타인의 손상된 영체를 치료한다. 소멸한 영혼이나 죽은 인간은 되살리지 못하며, 치료할수록 영력이 소모된다.',
+  per:'다정하고 섬세해서 남의 고통을 그냥 지나치지 못한다. 자기보다 주변 사람의 상태를 먼저 살핀다. 평소엔 조심스럽지만 중요한 순간엔 단호하다. 구하지 못한 망자들에 대한 죄책감을 품고 있다.',
+  like:'치료, 평화로운 시간, 셀레나와의 대화',hate:'희생, 타인의 고통, 무력한 상황',
+  dir:'e884765a-f03f-4ce6-9feb-431074e71189',im:['d3013f2a-fe8b-4905-a510-d6eb63910497','4021ea96-a76c-4dec-a2f4-b91c8b4efdf3','62fd1f93-844f-4c70-91d6-d380406fb072'],
+  line:'다친 데는 없어요? 무리하면 제가 먼저 알아챌 거예요.',
+  res:'곁을 밝히는 사람. 남의 아픔을 먼저 알아채고, 자기보다 주변을 챙기는 타입이에요. 조심스럽지만, 지켜야 할 순간엔 누구보다 단호해집니다.'},
+ {k:'ec',n:'에코',en:'ECHO',ep:'망자의 울림',c:'#7fc4e8',sex:'남',age:24,h:178,yr:43,role:'영적 이상현상 조사',wt:'맨손',w:'맨손',p:'음파',
+  look:'푸른빛이 도는 짧은 백발, 옅은 적안, 날렵하고 무심한 인상. 정장에 재킷, 그리고 늘 쓰고 있는 헤드폰.',
+  ab:'음파와 진동으로 충격을 주고, 되돌아오는 반향으로 주변의 움직임과 위치를 감지한다. 중거리 견제에 능하다.',
+  per:'무심하고 느긋하며 말수가 적다. 간섭하지도, 감정을 드러내지도 않는다. 혼자가 편하지만 중요하다고 여기는 일에는 끈질기게 매달린다. 오래전 들은 한 망자의 마지막 목소리를 잊지 못해 그 정체를 쫓고 있다.',
+  like:'음악, 혼자 있는 시간, 조용한 밤',hate:'소음, 간섭, 지나친 관심',
+  dir:'5c784912-a0bc-4da0-a4ce-826bd3e4365b',im:['aec246aa-6530-45f7-8868-094ca405ffe4','104948e1-1dc5-4627-bc13-b186499a1ec5','5d54f5ca-8475-44c6-95e7-886b579ffc9e','5d6ed889-0542-4045-9e8b-dee6b6a6c9c1'],
+  line:'…조용한 밤이네. 이런 날엔 소리가 잘 들려.',
+  res:'조용히 귀 기울이는 사람. 느긋하고 무심해 보여도, 마음에 걸린 일은 절대 놓지 않는 타입이에요. 남들이 못 듣는 작은 신호를 당신만은 듣습니다.'},
+ {k:'ve',n:'베스퍼',en:'VESPER',ep:'황혼의 환영',c:'#d2b26a',sex:'여',age:28,h:171,yr:97,role:'독립 활동 사신',wt:'대낫',w:'대낫 「잔광」',p:'분신',
+  look:'허리까지 흐르는 잿빛 금발, 금안, 속내를 알 수 없는 미소. 세련된 정장에 긴 검은 코트.',
+  ab:'자신과 똑같은 환영을 여럿 만든다. 분신은 공격하지 못하지만 움직임을 흉내 내 적을 교란하고, 그 틈에 본체가 대낫으로 기습한다.',
+  per:'여유롭고 능글맞으며 장난기가 있다. 상대의 반응과 속마음을 관찰하길 즐긴다. 친절하게 말하지만 본심은 드러내지 않고, 의미심장한 말로 상대를 떠본다. 다른 사신과 거리를 둔 채 특이한 영적 사건을 홀로 조사한다.',
+  like:'흥미로운 사람, 반응 관찰, 황혼',hate:'간섭, 뻔한 상황, 속내를 캐묻는 행동',
+  dir:'33b11f3f-843b-45ba-8e13-0cf7764bf5e4',im:['164c22c1-c981-447b-ae50-0eecc21732b0','5c7ef9db-f2d2-4362-8840-32e9d326c8f0','fad4bb3b-40e4-40ec-bfce-8fe272752edb','97e55483-568e-492d-8024-b2defba1e674','29a74435-b05b-4869-8313-9f022b876d44'],
+  line:'어머, 오늘 나를 뽑았네? 이유는… 비밀로 해둘까.',
+  res:'속을 알 수 없는 관찰자. 여유로운 미소 뒤에서 모두를 읽고 있는 타입이에요. 뻔한 건 질색, 흥미로운 사람에게만 진짜 관심을 보입니다.'}
+];
+const BY=Object.fromEntries(C.map(c=>[c.k,c]));
+
+const REL=[
+  ['ab','sp','오랜 동료 · 신뢰','#c8a860'],
+  ['ar','ca','오랜 라이벌','#e0304a'],
+  ['ar','ve','과거의 충돌','#7a6a85'],
+  ['se','lu','망자 인도 파트너','#f0a8c0'],
+  ['ca','no','토벌 콤비','#7fb8d8'],
+  ['je','ec','정반대 콤비','#7fb8d8']
+];
+
+
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function pic(url,color,label,glyph,cls='',extra=''){
+  return `<div class="ph ${cls}" style="--c:${color}" ${extra}><span>${glyph?GLYPH[glyph]||'':''}${label||''}</span><img src="${url}" alt="" loading="lazy" onerror="this.remove()"></div>`;
+}
+function setPic(el,url){el.insertAdjacentHTML('beforeend',`<img src="${url}" alt="" onerror="this.remove()">`)}
+const main=c=>prof(c.dir,c.im[0],640);
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800)}
+async function copy(text){try{await navigator.clipboard.writeText(text);toast('복사했어요 · 붙여넣어 공유해 보세요')}catch(e){toast('복사가 막혀 있어요 — 화면을 캡처해 공유해 주세요')}}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ornaments */
+const ORN='<svg viewBox="0 0 46 20" fill="none" stroke="currentColor" stroke-width="1"><path d="M2 10h10M34 10h10"/><path d="M15 10l3-3 3 3-3 3z"/><path d="M25 10l3-3 3 3-3 3z"/><path d="M23 2v16"/><path d="M23 4c-4-1-7 1-8 4 2-1.5 5-2 8-1.5"/></svg>';
+document.querySelectorAll('[data-orn]').forEach(e=>e.innerHTML=ORN);
+
+/* ======================= SOUND (Web Audio, generated live) ======================= */
+const BGM=(()=>{
+  let ctx=null,mediaEl=null,master,musicBus,sfxBus,on=false,level=0,timer=null,nextT=0,step=0,droneOn=false,nb=null;
+  const hz=m=>440*Math.pow(2,(m-69)/12);
+  function init(){
+    if(ctx)return true;
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+    try{ctx=new AC()}catch(e){return false}
+    master=ctx.createGain();master.gain.value=0;
+    const comp=ctx.createDynamicsCompressor();comp.threshold.value=-16;comp.ratio.value=4;comp.attack.value=.01;comp.release.value=.3;
+    master.connect(comp);
+    // iOS: Web Audio is muted by the silent switch. Ask for a 'playback' session, or route through a media element.
+    let routed=false;
+    try{if(navigator.audioSession){navigator.audioSession.type='playback'}}catch(e){}
+    const iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+    if(iOS&&!navigator.audioSession&&ctx.createMediaStreamDestination){
+      try{const dest=ctx.createMediaStreamDestination();comp.connect(dest);
+        mediaEl=document.createElement('audio');mediaEl.setAttribute('playsinline','');mediaEl.srcObject=dest.stream;routed=true}catch(e){routed=false}
+    }
+    if(!routed)comp.connect(ctx.destination);
+    const rev=ctx.createConvolver();rev.buffer=impulse(4.8,2.4);
+    const rg=ctx.createGain();rg.gain.value=.8;rev.connect(rg);rg.connect(master);
+    musicBus=ctx.createGain();musicBus.gain.value=.85;musicBus.connect(master);
+    const ms=ctx.createGain();ms.gain.value=.75;musicBus.connect(ms);ms.connect(rev);
+    sfxBus=ctx.createGain();sfxBus.gain.value=.8;sfxBus.connect(master);
+    const ss=ctx.createGain();ss.gain.value=.45;sfxBus.connect(ss);ss.connect(rev);
+    return true;
+  }
+  function impulse(sec,decay){const r=ctx.sampleRate,len=Math.floor(r*sec),b=ctx.createBuffer(2,len,r);
+    for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay)}return b}
+  function noise(){if(!nb){nb=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+    const s=ctx.createBufferSource();s.buffer=nb;s.loop=true;return s}
+  function env(g,t,a,v,hold,rel){g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);g.gain.setValueAtTime(v,t+a+hold);g.gain.linearRampToValueAtTime(0,t+a+hold+rel)}
+
+  /* choir "ah" voice: detuned saws → formant filters */
+  function voice(m,t,dur,vol){
+    const out=ctx.createGain();env(out,t,2.4,vol,Math.max(0,dur-2.4),3);
+    const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1600;
+    const f1=ctx.createBiquadFilter();f1.type='bandpass';f1.frequency.value=720;f1.Q.value=3;
+    const f2=ctx.createBiquadFilter();f2.type='bandpass';f2.frequency.value=1150;f2.Q.value=4;
+    const fg=ctx.createGain();fg.gain.value=2.2;const dg=ctx.createGain();dg.gain.value=.25;
+    lp.connect(f1);lp.connect(f2);lp.connect(dg);f1.connect(fg);f2.connect(fg);fg.connect(out);dg.connect(out);out.connect(musicBus);
+    const lfo=ctx.createOscillator();lfo.frequency.value=4.6+Math.random()*.8;const lg=ctx.createGain();lg.gain.value=4;lfo.connect(lg);
+    const end=t+dur+3.2;
+    [-8,0,7].forEach(dt=>{const o=ctx.createOscillator();o.type='sawtooth';o.frequency.value=hz(m);o.detune.value=dt;lg.connect(o.detune);o.connect(lp);o.start(t);o.stop(end)});
+    lfo.start(t);lfo.stop(end);
+  }
+  /* tolling bell: inharmonic partials */
+  function bell(m,t,vol,bus){[1,2.0,2.76,5.4,8.93].forEach((r,i)=>{const o=ctx.createOscillator();o.frequency.value=hz(m)*r;const g=ctx.createGain();const v=vol/(1+i*.9);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+7/(1+i*.7));o.connect(g);g.connect(bus||musicBus);o.start(t);o.stop(t+7.2)})}
+  /* celesta-like note */
+  function pluck(m,t,vol){[[1,'triangle',1],[2,'sine',.35],[4.01,'sine',.12]].forEach(([r,ty,k])=>{const o=ctx.createOscillator();o.type=ty;o.frequency.value=hz(m)*r;const g=ctx.createGain();
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol*k,t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+2.8);o.connect(g);g.connect(musicBus);o.start(t);o.stop(t+3)})}
+  function startDrone(){
+    if(droneOn)return;droneOn=true;const t=ctx.currentTime;
+    const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+5);
+    const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=380;
+    const l=ctx.createOscillator();l.frequency.value=.05;const lg=ctx.createGain();lg.gain.value=160;l.connect(lg);lg.connect(lp.frequency);l.start();
+    [[hz(38),'sawtooth',.35],[hz(38)*1.004,'sawtooth',.35],[hz(50),'triangle',.6],[hz(57),'sine',.25]].forEach(([f,ty,v])=>{const o=ctx.createOscillator();o.type=ty;o.frequency.value=f;const og=ctx.createGain();og.gain.value=v;o.connect(og);og.connect(lp);o.start()});
+    lp.connect(g);g.connect(musicBus);
+  }
+  // D minor lament: Dm – Bb – Gm – A
+  const PROG=[[50,57,62,65],[46,53,58,62],[43,50,58,62],[45,52,57,61]];
+  const MEL=[[81,79,77,76],[77,74,77,79],[82,81,79,77],[76,73,76,81]];
+  const BAR=8;
+  function sched(){
+    if(!ctx)return;
+    while(nextT<ctx.currentTime+1.2){
+      const i=step%4,t=nextT;
+      if(level>=1)PROG[i].forEach((m,k)=>voice(m,t,BAR,k===3?.05:.04));
+      if(level>=2){
+        if(i===0)bell(62,t+.05,.16);
+        if(i===2)bell(57,t+.05,.12);
+        MEL[i].forEach((m,k)=>{if(k===0||Math.random()<.65)pluck(m,t+1.2+k*1.6,.07)});
+      }
+      nextT+=BAR;step++;
+    }
+  }
+  function ui(){document.querySelectorAll('.snd').forEach(b=>{b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)})}
+  function unlock(){ // must run synchronously inside the tap
+    try{const b=ctx.createBuffer(1,1,22050),src=ctx.createBufferSource();src.buffer=b;src.connect(ctx.destination);src.start(0)}catch(e){}
+    if(mediaEl){const pr=mediaEl.play();if(pr&&pr.catch)pr.catch(()=>{})}
+  }
+  async function start(){
+    if(!init()){toastSafe('이 브라우저에서는 소리를 낼 수 없어요');return}
+    unlock();
+    try{await ctx.resume()}catch(e){}
+    if(ctx.state!=='running'){toastSafe('소리가 막혀 있어요 — BGM 버튼을 한 번 더 눌러주세요');}
+    on=true;const t=ctx.currentTime;
+    master.gain.cancelScheduledValues(t);master.gain.setValueAtTime(master.gain.value,t);master.gain.linearRampToValueAtTime(.9,t+1.8);
+    startDrone();
+    if(!timer){nextT=ctx.currentTime+.1;sched();timer=setInterval(sched,300)}
+    ui();
+  }
+  function stop(){
+    on=false;ui();if(!ctx)return;const t=ctx.currentTime;
+    master.gain.cancelScheduledValues(t);master.gain.setValueAtTime(master.gain.value,t);master.gain.linearRampToValueAtTime(0,t+.8);
+    setTimeout(()=>{if(!on&&ctx){ctx.suspend();if(mediaEl)mediaEl.pause()}},900);
+  }
+  function setLevel(l){
+    const up=l>level;level=l;
+    if(up&&ctx&&on&&l===1){nextT=ctx.currentTime+.05;sched()} // bring the choir in right away
+  }
+  /* sound effects */
+  function sfx(name){
+    if(!on||!ctx)return;const t=ctx.currentTime+.01;
+    const G=(v)=>{const g=ctx.createGain();g.gain.value=v;g.connect(sfxBus);return g};
+    if(name==='puff'){const n=noise(),f=ctx.createBiquadFilter();f.type='highpass';f.frequency.value=2500;const g=G(0);env(g,t,.15,.05,.05,.6);n.connect(f);f.connect(g);n.start(t);n.stop(t+1)}
+    if(name==='rumble'){const o=ctx.createOscillator();o.frequency.value=41;const n=noise(),f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=180;
+      const g=G(0);env(g,t,2,.45,.5,3.5);o.connect(g);n.connect(f);f.connect(g);o.start(t);n.start(t);o.stop(t+6.2);n.stop(t+6.2)}
+    if(name==='whoosh'){const n=noise(),f=ctx.createBiquadFilter();f.type='bandpass';f.Q.value=1.4;f.frequency.setValueAtTime(250,t);f.frequency.exponentialRampToValueAtTime(6000,t+.26);
+      const g=G(0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.9,t+.18);g.gain.linearRampToValueAtTime(0,t+.42);n.connect(f);f.connect(g);n.start(t);n.stop(t+.5)}
+    if(name==='impact'){
+      const o=ctx.createOscillator();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(32,t+.7);
+      const g=G(0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(1,t+.01);g.gain.exponentialRampToValueAtTime(.001,t+1.4);o.connect(g);o.start(t);o.stop(t+1.5);
+      const n=noise(),f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=1400;const g2=G(0);g2.gain.setValueAtTime(.6,t);g2.gain.exponentialRampToValueAtTime(.001,t+.5);n.connect(f);f.connect(g2);n.start(t);n.stop(t+.6);
+      [2350,3170,4410].forEach((fq,i)=>{const s=ctx.createOscillator();s.frequency.value=fq;const sg=G(0);sg.gain.setValueAtTime(.06/(i+1),t);sg.gain.exponentialRampToValueAtTime(.0001,t+1.6);s.connect(sg);s.start(t);s.stop(t+1.7)});
+    }
+    if(name==='shimmer'){[74,77,81,86,89,93,98].forEach((m,i)=>{const o=ctx.createOscillator();o.type='triangle';o.frequency.value=hz(m);const g=G(0);const tt=t+i*.16;
+      g.gain.setValueAtTime(0,tt);g.gain.linearRampToValueAtTime(.045,tt+.02);g.gain.exponentialRampToValueAtTime(.0001,tt+2.2);o.connect(g);o.start(tt);o.stop(tt+2.3)})}
+    if(name==='bell'){bell(50,t,.3,sfxBus);bell(62,t+.02,.18,sfxBus)}
+    if(name==='thud'){const o=ctx.createOscillator();o.frequency.setValueAtTime(90,t);o.frequency.exponentialRampToValueAtTime(40,t+.25);const g=G(0);g.gain.setValueAtTime(.7,t);g.gain.exponentialRampToValueAtTime(.001,t+.45);o.connect(g);o.start(t);o.stop(t+.5)}
+  }
+  /* heart monitor beeps synced to the ECG line */
+  function ecg(beats,flat,flatEnd){
+    if(!on||!ctx)return;const t0=ctx.currentTime;
+    const beep=(t,d,v)=>{const o=ctx.createOscillator();o.frequency.value=950;const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.setValueAtTime(v,t+d-.04);g.gain.linearRampToValueAtTime(0,t+d);o.connect(g);g.connect(sfxBus);o.start(t);o.stop(t+d+.05)};
+    beats.forEach((b,i)=>beep(t0+b,.13,i===2?.05:.09));
+    beep(t0+flat,flatEnd-flat,.07);
+  }
+  function toastSafe(t){try{toast(t)}catch(e){}}
+  document.addEventListener('visibilitychange',()=>{if(!ctx)return;if(document.hidden){ctx.suspend();if(mediaEl)mediaEl.pause()}else if(on){ctx.resume();if(mediaEl){const pr=mediaEl.play();if(pr&&pr.catch)pr.catch(()=>{})}}});
+  return{start,stop,toggle(){on?stop():start()},setLevel,sfx,ecg,get on(){return on},_dbg:()=>({ctx,master,mediaEl})};
+})();
+
+/* ======================= OPENING ======================= */
+const op=document.getElementById('op');
+const $=id=>document.getElementById(id);
+const SIL=`<svg class="sil" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid slice"><defs><radialGradient id="mg" cx="50%" cy="38%" r="60%"><stop offset="0" stop-color="#3a0a14"/><stop offset="1" stop-color="#000"/></radialGradient></defs>
+ <rect width="400" height="700" fill="url(#mg)"/><circle cx="200" cy="250" r="150" fill="#5a0613" opacity=".35"/>
+ <path d="M200 150c-40 0-62 34-62 74 0 22 6 40 16 52-44 22-74 80-86 170l-18 254h300l-18-254c-12-90-42-148-86-170 10-12 16-30 16-52 0-40-22-74-62-74z" fill="#020102"/>
+ <path d="M300 120L230 690" stroke="#0b0306" stroke-width="7"/><path d="M296 128c-70-34-170-18-226 54 70-34 150-40 222-18z" fill="#0b0306" stroke="#e0304a" stroke-opacity=".6" stroke-width="1.5"/>
+ <circle cx="186" cy="226" r="3" fill="#ff3550"/><circle cx="214" cy="226" r="3" fill="#ff3550"/></svg>`;
+document.querySelectorAll('[data-art]').forEach(z=>{z.innerHTML=SIL+`<img src="${IMG.cover}" alt="" onerror="this.remove()">`});
+
+/* opening particle system */
+const cv=$('opCv'),cx2=cv.getContext('2d');let OW,OH,PS=[],mode='idle',raf;
+function rsz(){const d=Math.min(devicePixelRatio||1,2);OW=cv.width=innerWidth*d;OH=cv.height=innerHeight*d}
+rsz();addEventListener('resize',rsz);
+function tick(){
+  cx2.clearRect(0,0,OW,OH);cx2.globalCompositeOperation='lighter';
+  for(let i=PS.length-1;i>=0;i--){const p=PS[i];
+    if(p.t){p.x+=(p.tx-p.x)*p.e;p.y+=(p.ty-p.y)*p.e;p.e=Math.min(p.e*1.025,.2)}
+    else{p.x+=p.vx;p.y+=p.vy;p.vx*=p.f;p.vy=p.vy*p.f+p.g}
+    p.l-=p.d;if(p.l<=0){PS.splice(i,1);continue}
+    const a=Math.min(1,p.l)*p.a;
+    cx2.beginPath();cx2.arc(p.x,p.y,p.r,0,7);cx2.fillStyle=`rgba(${p.c},${a})`;cx2.shadowBlur=p.r*4;cx2.shadowColor=`rgba(${p.c},1)`;cx2.fill();
+  }
+  raf=requestAnimationFrame(tick);
+}
+const D=()=>Math.min(devicePixelRatio||1,2);
+function dust(n,x,y,spread,col){for(let i=0;i<n;i++)PS.push({x:x+(Math.random()-.5)*spread*D(),y:y+(Math.random()-.5)*spread*.35*D(),vx:(Math.random()-.5)*.6*D(),vy:-(Math.random()*.9+.2)*D(),f:.995,g:-.004*D(),r:(Math.random()*1.6+.5)*D(),c:col||'220,210,225',a:Math.random()*.6+.3,l:1.4+Math.random(),d:.008})}
+function burst(){ // along slash line from (100%,14%) to (0,86%)
+  for(let i=0;i<260;i++){const t=Math.random();const x=OW*(1-t),y=OH*(.14+.72*t);
+    const nx=OH*.72,ny=OW;const L=Math.hypot(nx,ny);const s=(Math.random()<.5?-1:1)*(Math.random()*7+1)*D();
+    PS.push({x,y,vx:nx/L*s+(Math.random()-.5)*2,vy:ny/L*s*0.6+(Math.random()-.5)*2,f:.95,g:.03*D(),r:(Math.random()*2.2+.6)*D(),c:Math.random()<.25?'255,255,255':'255,60,85',a:1,l:1.2+Math.random()*.6,d:.012})}
+}
+function gather(){
+  for(let i=0;i<220;i++){const ang=Math.random()*Math.PI*2,rad=Math.max(OW,OH)*(.55+Math.random()*.4);
+    const tx=OW/2+Math.cos(ang)*Math.random()*40*D(),ty=OH/2+Math.sin(ang)*Math.random()*40*D();
+    PS.push({x:OW/2+Math.cos(ang)*rad,y:OH/2+Math.sin(ang)*rad,tx,ty:ty,t:1,e:.012+Math.random()*.01,r:(Math.random()*1.8+.6)*D(),c:Math.random()<.3?'255,200,160':'255,55,80',a:.9,l:2.6+Math.random()*.6,d:.012})}
+}
+
+let opRun=0,gated=false;
+function waitGate(){return new Promise(res=>{
+  const done=()=>{gated=true;$('gate').classList.add('hide');res()};
+  $('gOn').onclick=e=>{e.stopPropagation();BGM.start();done()};
+  $('gOff').onclick=e=>{e.stopPropagation();done()};
+})}
+function ecgTimes(){const p=document.querySelector('#ecg path');const L=p.getTotalLength();
+  const find=x=>{let lo=0,hi=L;for(let i=0;i<28;i++){const m=(lo+hi)/2;p.getPointAtLength(m).x<x?lo=m:hi=m}return lo/L*3.2};
+  return{beats:[find(92),find(182),find(266)],flat:find(282)}}
+function setT(el,html){el.innerHTML=html;el.classList.remove('blur');el.classList.add('on')}
+function offT(el,blur){el.classList.remove('on');if(blur)el.classList.add('blur')}
+function waitTap(ms){return new Promise(res=>{let done=0;const h=()=>{if(done)return;done=1;op.removeEventListener('pointerdown',h);res()};op.addEventListener('pointerdown',h);setTimeout(h,ms)})}
+
+async function playOpening(){
+  const id=++opRun;const alive=()=>id===opRun;
+  op.className='';document.body.classList.add('lock');
+  ['void','scene','sigil','final','flash','slash','ecg'].forEach(k=>$(k).className='L');
+  $('ot1').className='ot';$('ot2').className='ot';$('hint').className='hint';
+  document.querySelectorAll('.mem').forEach(m=>m.remove());
+  PS=[];cancelAnimationFrame(raf);tick();
+  if(!gated){$('gate').classList.remove('hide');await waitGate();if(!alive())return}
+  BGM.setLevel(0);
+  if(RM){finale(true);return}
+  await sleep(700);if(!alive())return;
+  // 1. heartbeat → flatline
+  $('ecg').classList.add('run');{const e=ecgTimes();BGM.ecg(e.beats,e.flat,5.6)}
+  await sleep(3300);if(!alive())return;
+  setT($('ot1'),'숨이 멎었다.');
+  await sleep(1800);if(!alive())return;
+  $('ecg').classList.add('fade');offT($('ot1'));
+  await sleep(1200);if(!alive())return;
+  // 2. memories dissolve
+  const words=['이름','엄마의 목소리','좋아하던 노래','마지막으로 본 하늘','누군가의 얼굴','약속'];
+  const spots=[[18,22],[58,16],[10,44],[56,40],[22,66],[62,70]];
+  const mems=words.map((w,i)=>{const m=document.createElement('div');m.className='mem';m.textContent=w;m.style.left=spots[i][0]+'%';m.style.top=spots[i][1]+'%';op.appendChild(m);return m});
+  for(const m of mems){m.classList.add('on');await sleep(260);if(!alive())return}
+  setT($('ot2'),'이름이 먼저 흩어지고,<br>얼굴이, 마지막엔 기억이 지워져 간다.');
+  await sleep(1500);if(!alive())return;
+  for(const m of mems){BGM.sfx('puff');const r=m.getBoundingClientRect();dust(26,(r.left+r.width/2)*D(),(r.top+r.height/2)*D(),r.width);m.classList.add('gone');await sleep(330);if(!alive())return}
+  await sleep(1200);offT($('ot2'),true);
+  await sleep(1400);if(!alive())return;mems.forEach(m=>m.remove());
+  // 3. the reaper
+  $('scene').classList.add('on');BGM.sfx('rumble');BGM.setLevel(1);
+  await sleep(1400);if(!alive())return;
+  setT($('ot2'),'완전히 사라지기 직전 —<br>누군가 당신을 내려다보고 있었다.');
+  await sleep(2600);if(!alive())return;
+  offT($('ot2'));$('hint').classList.add('on');
+  await waitTap(6000);if(!alive())return;
+  $('hint').classList.remove('on');
+  // 4. scythe slash
+  $('slash').classList.add('go');BGM.sfx('whoosh');
+  await sleep(200);if(!alive())return;
+  BGM.sfx('impact');op.classList.add('shake');$('flash').classList.add('go');burst();
+  if(navigator.vibrate)try{navigator.vibrate([30,40,90])}catch(e){}
+  await sleep(120);$('scene').classList.add('split');$('void').classList.add('on');
+  await sleep(1600);if(!alive())return;op.classList.remove('shake');
+  // 5. reborn
+  setT($('ot1'),'검붉은 빛이 흩어진 당신을 다시 엮는다.');$('ot1').style.top='72%';
+  gather();BGM.sfx('shimmer');
+  await sleep(2600);if(!alive())return;
+  $('sigil').classList.add('on');offT($('ot1'));BGM.sfx('bell');
+  await sleep(1600);if(!alive())return;
+  setT($('ot1'),'— 당신은 <b style="color:#ff5a70">선택</b>되었다.');BGM.setLevel(2);
+  await sleep(2400);if(!alive())return;
+  offT($('ot1'));finale();
+}
+function finale(instant){
+  BGM.setLevel(2);setTimeout(()=>BGM.sfx('thud'),420);
+  $('void').classList.add('on');$('scene').classList.add('split');
+  $('sigil').classList.add('on','up');$('final').classList.add('on');$('hint').classList.remove('on');
+  $('ot1').className='ot';$('ot2').className='ot';
+  if(instant){$('ecg').classList.add('fade');document.querySelectorAll('.mem').forEach(m=>m.remove())}
+}
+function exitOpening(){
+  opRun++;op.classList.add('out');
+  setTimeout(()=>{op.classList.add('gone');cancelAnimationFrame(raf);PS=[];document.body.classList.remove('lock');$('ot1').style.top=''},1300);
+  scrollTo(0,0);
+}
+['skip','sndOp','gate'].forEach(k=>$(k).addEventListener('pointerdown',e=>e.stopPropagation()));
+$('sndOp').onclick=e=>{e.stopPropagation();BGM.toggle()};
+$('snd').onclick=()=>{BGM.setLevel(2);BGM.toggle()};
+$('skip').onclick=e=>{e.stopPropagation();if($('final').classList.contains('on'))exitOpening();else{opRun++;finale(true)}};
+$('enter').onclick=e=>{e.stopPropagation();exitOpening()};
+$('replayOp').onclick=()=>{document.body.classList.remove('menu-open');op.className='';playOpening()};
+playOpening();
+
+/* ======================= SITE ======================= */
+/* menu */
+$('burger').onclick=()=>document.body.classList.toggle('menu-open');
+$('menu').addEventListener('click',e=>{if(e.target.closest('a'))document.body.classList.remove('menu-open')});
+
+/* scroll progress */
+addEventListener('scroll',()=>{const h=document.documentElement;$('prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'},{passive:true});
+
+/* hero + prologue images */
+setPic($('heroBg'),IMG.cover);
+setPic($('introImg'),IMG.intro[1]);
+
+/* prologue typewriter */
+const LINES=['…차갑고 단단한 돌바닥의 감촉.','눈을 뜨자, 끝이 보이지 않는 검은 회랑이 펼쳐져 있었다.','이름은 없다. 과거도 없다. 다만 손끝에 남은 검붉은 온기만이.','이곳은 명계, 제7경계구 — 당신의 두 번째 생이 시작되는 곳.'];
+let typing=0;
+function typeIntro(){
+  const box=$('type');const id=++typing;box.innerHTML='';let li=0,ci=0,html='';
+  if(RM){box.innerHTML=LINES.join('<br>');return}
+  (function step(){
+    if(id!==typing)return;
+    if(li>=LINES.length){box.innerHTML=html+'<span class="cur"></span>';return}
+    const L=LINES[li];
+    if(ci<L.length){html+=esc(L[ci++]);box.innerHTML=html+'<span class="cur"></span>';setTimeout(step,'—,.…'.includes(L[ci-1])?240:55)}
+    else{html+='<br>';li++;ci=0;setTimeout(step,650)}
+  })();
+}
+$('replay').onclick=typeIntro;
+
+/* world */
+const WORLD=[
+ ['ORIGIN','현세와 명계','모든 인간은 언젠가 죽는다. 산 자들이 사는 현세와 죽은 영혼이 향하는 명계 — 두 세계의 경계에서 사신이 움직인다.'],
+ ['KEEPER','죽음의 관리인, 사신','사신은 목숨을 거두는 존재가 아니다. 영혼을 명계로 인도하고, 떠도는 망자를 관리하며, 원령과 악귀를 처단해 두 세계의 질서를 지킨다. 구원과 심판, 그 방식은 사신마다 다르다.'],
+ ['DISTRICT VII','제7경계구','강한 사신들이 모인 명계의 경계구. 심판자 아비터가 통솔하고, 아홉 명의 사신이 협력하거나 경쟁하며 임무를 수행한다. 쉬는 날엔 현세를 어슬렁거리기도 한다.'],
+ ['NEW NAME','죽음 이후, 새로운 이름','당신은 죽은 뒤 과거와 이름을 잃었다. 그리고 드문 적성을 인정받아 사신으로 선택되었다. 악귀와 싸울지, 망자의 이야기를 들어줄지 — 길은 당신이 정한다.']
+];
+$('worldList').innerHTML=WORLD.map((w,i)=>`<article class="wcard reveal frame">${pic(IMG.about[i],'#b3122e','','seal')}<div class="tx"><small>${w[0]}</small><h3>${w[1]}</h3><p>${w[2]}</p></div></article>`).join('');
+
+/* roster */
+const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+const grid=$('grid');
+grid.innerHTML=C.map((c,i)=>`
+ <button class="card reveal frame" data-k="${c.k}" data-w="${c.wt}" style="--c:${c.c}">
+  ${pic(main(c),c.c,c.en,c.wt)}
+  <span class="num">${ROMAN[i]}</span>
+  <span class="bdg">「${c.p}」</span>
+  <div class="ov"><div class="ep">${c.ep}</div><div class="nm">${c.n}</div><div class="rl">${c.role}</div></div>
+ </button>`).join('');
+grid.addEventListener('click',e=>{const b=e.target.closest('.card');if(b)openChar(b.dataset.k)});
+$('filters').addEventListener('click',e=>{
+  const b=e.target.closest('.chip');if(!b)return;
+  document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));
+  const f=b.dataset.f;grid.querySelectorAll('.card').forEach(card=>card.classList.toggle('hide',f!=='all'&&card.dataset.w!==f));
+});
+const sorted=[...C].sort((a,b)=>b.yr-a.yr);
+$('bars').innerHTML=sorted.map(c=>`<div class="bar" style="--c:${c.c}"><span>${c.n}</span><div class="t"><i data-w="${c.yr/263*100}"></i></div><span class="v">${c.yr}년</span></div>`).join('');
+
+/* relation map */
+(function(){
+  const order=['ab','sp','ec','je','lu','se','ve','ar','ca','no'];
+  const cx=200,cy=200,R=145,r=27;const pos={};
+  order.forEach((k,i)=>{const a=-Math.PI/2+i*2*Math.PI/order.length;pos[k]=[cx+R*Math.cos(a),cy+R*Math.sin(a)]});
+  let s=`<defs>${order.map(k=>`<clipPath id="cp-${k}"><circle cx="${pos[k][0]}" cy="${pos[k][1]}" r="${r}"/></clipPath>`).join('')}</defs>`;
+  REL.forEach(([a,b,l,col])=>{
+    const [x1,y1]=pos[a],[x2,y2]=pos[b];const mx=(x1+x2)/2,my=(y1+y2)/2;const dx=mx-cx,dy=my-cy;const d=Math.hypot(dx,dy)||1;
+    const qx=cx+dx/d*(d-58),qy=cy+dy/d*(d-58);const lx=cx+dx/d*(d-62),ly=cy+dy/d*(d-62);
+    s+=`<path class="edge" data-a="${a}" data-b="${b}" d="M${x1},${y1} Q${qx},${qy} ${x2},${y2}" stroke="${col}" fill="none" ${l.includes('충돌')?'stroke-dasharray="4 4"':''}/>`;
+    s+=`<text class="elab" data-a="${a}" data-b="${b}" x="${lx}" y="${ly+3}" text-anchor="middle">${l}</text>`;
+  });
+  order.forEach(k=>{const c=BY[k],[x,y]=pos[k];
+    s+=`<g class="node" data-k="${k}"><circle cx="${x}" cy="${y}" r="${r+3}" fill="none" stroke="${c.c}" stroke-width="1.5"/><circle cx="${x}" cy="${y}" r="${r}" fill="${c.c}" opacity=".35"/>
+      <text x="${x}" y="${y+4}" style="font-family:Cinzel;font-size:9px;letter-spacing:1px">${c.en.slice(0,3)}</text>
+      <image data-src="${prof(c.dir,c.im[0],256)}" x="${x-r}" y="${y-r}" width="${r*2}" height="${r*2}" preserveAspectRatio="xMidYMin slice" clip-path="url(#cp-${k})"/>
+      <text x="${x}" y="${y+r+16}">${c.n}</text></g>`});
+  const svg=$('mapSvg');svg.innerHTML=s;
+  svg.querySelectorAll('image[data-src]').forEach(im=>{const t=new Image();t.onload=()=>im.setAttribute('href',t.src);t.src=im.dataset.src});
+  const map=$('map');let cur=null;
+  svg.addEventListener('click',e=>{
+    const g=e.target.closest('.node');if(!g){map.classList.remove('focus');cur=null;return}
+    const k=g.dataset.k;if(cur===k){openChar(k);return}
+    cur=k;map.classList.add('focus');const linked=new Set([k]);
+    svg.querySelectorAll('.edge,.elab').forEach(el=>{const on=el.dataset.a===k||el.dataset.b===k;el.classList.toggle('on',on);if(on){linked.add(el.dataset.a);linked.add(el.dataset.b)}});
+    svg.querySelectorAll('.node').forEach(n=>n.classList.toggle('on',linked.has(n.dataset.k)));
+  });
+})();
+
+/* modal */
+const modal=$('modal'),sheet=$('sheet');
+function relsOf(k){return REL.filter(r=>r[0]===k||r[1]===k).map(r=>({o:r[0]===k?r[1]:r[0],l:r[2]}))}
+function openChar(k){
+  const c=BY[k];sheet.style.setProperty('--c',c.c);const rels=relsOf(k);
+  sheet.innerHTML=`<button class="close" data-close aria-label="닫기">✕</button>
+   <div class="mhero"><div>
+       ${pic(main(c),c.c,c.en,c.wt,'mimg frame','id="mimg"')}
+       <div class="thumbs">${c.im.map((f,i)=>`<button data-i="${i}" class="${i?'':'on'}">${pic(prof(c.dir,f,256),c.c,'',c.wt)}</button>`).join('')}</div>
+     </div>
+     <div class="mbody">
+       <div class="ep">${c.ep}</div><h3>${c.n}<small>${c.en}</small></h3>
+       <div class="pills"><span>${c.role}</span><span>${c.sex}성</span><span>${c.age}세</span><span>${c.h}cm</span></div>
+       <div class="kv"><div><small>권능</small><b>「${c.p}」</b></div><div><small>무기</small><b>${c.w}</b></div><div><small>사신 경력</small><b>${c.yr}년</b></div><div><small>근속 순위</small><b>${sorted.indexOf(c)+1}위 / 10</b></div></div>
+       <div class="blk"><h4>외모</h4><p>${c.look}</p></div>
+       <div class="blk"><h4>권능 · 전투</h4><p>${c.ab}</p></div>
+       <div class="blk"><h4>성격</h4><p>${c.per}</p></div>
+       <div class="likes"><div class="y"><small>♡ 좋아하는 것</small>${c.like}</div><div class="n"><small>✕ 싫어하는 것</small>${c.hate}</div></div>
+       ${rels.length?`<div class="blk"><h4>관계</h4><div class="rel">${rels.map(r=>{const o=BY[r.o];return `<button data-go="${o.k}" style="--c2:${o.c}">${pic(prof(o.dir,o.im[0],256),o.c,'','')}${o.n} <em>${r.l}</em></button>`}).join('')}</div></div>`:''}
+       ${k==='ab'?`<div class="blk"><h4>설정 메모</h4><p style="font-size:13px;color:var(--dim)">일부 설명에 대낫으로 적힌 부분이 있지만, 제작자 코멘트에 따라 무기는 장검 「천관」이 맞습니다.</p></div>`:''}
+     </div></div>`;
+  modal.classList.add('on');modal.setAttribute('aria-hidden','false');document.body.classList.add('lock');sheet.scrollTop=0;
+}
+function closeModal(){modal.classList.remove('on');modal.setAttribute('aria-hidden','true');document.body.classList.remove('lock')}
+modal.addEventListener('click',e=>{
+  if(e.target.closest('[data-close]'))return closeModal();
+  const t=e.target.closest('.thumbs button');
+  if(t){const mi=$('mimg');const img=t.querySelector('img');
+    sheet.querySelectorAll('.thumbs button').forEach(b=>b.classList.toggle('on',b===t));
+    if(mi&&img){const m=mi.querySelector('img');const src=img.src.replace('w=256','w=640');if(m)m.src=src;else setPic(mi,src)}return}
+  const g=e.target.closest('[data-go]');if(g)openChar(g.dataset.go);
+});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();document.body.classList.remove('menu-open')}});
+
+/* quiz */
+const Q=[
+ ['떠도는 망자를 마주쳤다. 가장 먼저 하는 일은?',[['이야기를 끝까지 들어준다','se lu'],['기록부터 확인해 정체를 파악한다','sp ab'],['위험해 보이면 즉시 제압한다','ca no'],['한 걸음 물러나 반응을 살핀다','ve ec']]],
+ ['임무 없는 휴일, 당신은 어디에?',[['현세 번화가 구경','je ve'],['헤드폰 끼고 조용한 밤 산책','ec no'],['훈련장에서 땀 흘리기','ar ca'],['서고에서 정리하며 차 한잔','sp ab se']]],
+ ['팀 임무에서 내가 맡는 역할은?',[['상황을 지휘하고 책임진다','ab ar'],['맨 앞에서 싸운다','ca ar'],['다친 동료를 챙긴다','lu se'],['혼자 따로 움직인다','no ve je']]],
+ ['가장 참을 수 없는 건?',[['무책임한 태도','ab ar'],['시끄러운 소음과 수다','no ec'],['지루한 규칙과 간섭','je ve'],['남의 슬픔을 가볍게 여기는 것','se lu'],['근거 없는 추측','sp']]],
+ ['하나만 가질 수 있다면, 어떤 권능?',[['공간을 가두는 장벽','ab'],['멀리 닿는 참격','ar'],['마음을 가라앉히는 손길','se'],['모든 걸 태우는 불꽃','ca'],['시간을 앞지르는 속도','je'],['진실을 읽는 눈','sp'],['세계를 짓누르는 힘','no'],['상처를 낫게 하는 빛','lu'],['어둠 속에서도 듣는 귀','ec'],['나를 닮은 환영들','ve']],true],
+ ['친구들이 말하는 나는?',[['듬직하지만 살짝 무서운 사람','ab ar'],['못 말리는 장난꾸러기','je ve'],['다정한 사람','lu se'],['속을 잘 모르겠는 사람','ec no ve'],['열정 덩어리','ca'],['냉정한 분석가','sp']]],
+ ['손에 쥘 무기를 고른다면?',[['곧게 뻗은 장검','ar ab je'],['달처럼 휜 대낫','se ca ve'],['맨손이면 충분하다','sp no lu ec']]]
+];
+const quiz=$('quiz');let qi=0,score={};
+function quizStart(){quiz.innerHTML=`<div class="start fade"><div class="big">V</div><p>제7경계구 적성 검사관이 당신을 기다립니다.<br>직감대로 고르세요. 정답은 없습니다.</p><button class="btn red" id="qgo">검사 시작</button></div>`;
+  $('qgo').onclick=()=>{qi=0;score={};C.forEach(c=>score[c.k]=0);quizQ()}}
+function quizQ(){
+  const [q,opts,two]=Q[qi];
+  quiz.innerHTML=`<div class="fade"><div class="qtop"><span>QUESTION ${ROMAN[qi]}</span><span>${qi+1} / ${Q.length}</span></div><div class="qprog"><i style="width:${qi/Q.length*100}%"></i></div>
+   <div class="qq">${q}</div><div class="opts ${two?'two':''}">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${o[0]}</button>`).join('')}</div></div>`;
+  quiz.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ks=opts[b.dataset.i][1].split(' ');ks.forEach(k=>score[k]+=ks.length===1?2:1);qi++;qi<Q.length?quizQ():quizRes()});
+}
+function quizRes(){
+  const ranked=Object.entries(score).sort((a,b)=>b[1]-a[1]||Math.random()-.5);const c=BY[ranked[0][0]],s=BY[ranked[1][0]];
+  quiz.innerHTML=`<div class="res fade" style="--c:${c.c}">${pic(main(c),c.c,c.en,c.wt,'frame')}
+    <div><div class="lbl">당신과 가장 닮은 사신</div><h3><small>${c.ep}</small>${c.n}</h3><p>${c.res}</p>
+     <div class="match">추천 담당 업무 · <b>${c.role}</b><br>두 번째로 닮은 사신 · <b>${s.n}</b> (${s.ep})</div>
+     <div class="row"><button class="sm" id="qprof">${c.n} 프로필 보기</button><button class="sm" id="qcopy">결과 복사</button><button class="sm" id="qre">↺ 다시 하기</button></div></div></div>`;
+  $('qprof').onclick=()=>openChar(c.k);$('qre').onclick=quizStart;
+  $('qcopy').onclick=()=>copy(`[RE:QUIEM 사신 적성 검사]\n나와 닮은 사신: ${c.n} — ${c.ep}\n추천 업무: ${c.role} / 권능 「${c.p}」\n${c.res}`);
+}
+quizStart();
+
+/* id card */
+function hash(str){let h=2166136261;for(const ch of str){h^=ch.codePointAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){return()=>{seed=Math.imul(seed^seed>>>15,seed|1);seed^=seed+Math.imul(seed^seed>>>7,seed|61);return((seed^seed>>>14)>>>0)/4294967296}}
+const PRE=['새벽의','잿빛의','검은 달의','잔향의','유리의','별 없는 밤의','얼어붙은','붉은 비의','고요한','마지막 종의','흩날리는','안개 낀'];
+const NOUN=['인도자','방랑자','관측자','파수꾼','집행자','기록자','노래꾼','추적자','등불지기','문지기'];
+const POW=[['역행','짧은 순간 영체의 시간을 되감는다'],['결빙','영력을 얼려 망자의 폭주를 멈춘다'],['잔향','지나간 자리의 감정을 되짚는다'],['반사','받은 영력을 그대로 되돌려 보낸다'],['각인','표식을 남긴 영혼의 위치를 언제든 안다'],['안개','주변을 짙은 안개로 덮어 시야를 지운다'],['공명','동료의 권능을 잠시 증폭시킨다'],['연쇄','영력의 사슬로 대상을 묶는다'],['정적','일정 범위의 소리를 완전히 지운다'],['흑염','검은 불꽃으로 원한만을 태운다'],['등불','길 잃은 영혼을 빛으로 불러들인다'],['봉인','망자의 기억 일부를 잠시 잠가둔다']];
+const WEP=[['장검',['흑요','월영','청람','야명','은하']],['대낫',['잔월','설화','묵련','혈우','명종']],['맨손',['영력 강화 격투']]];
+const MISSION=['도심 폐역에 출몰하는 원령 조사','기억을 잃은 망자 한 명의 인도','현세 병원 옥상의 이상 영력 감지','도주 영혼 추적 지원','버려진 학교의 악귀 토벌 보조','명계 서고 기록 정리 (지루하다)','강가에서 노래하는 망자의 정체 확인'];
+$('idForm').addEventListener('submit',e=>{
+  e.preventDefault();const name=$('idInput').value.trim();if(!name){toast('새 이름을 적어주세요');return}
+  $('idInput').blur();
+  const r=rng(hash(name+'#VII'));const pick=a=>a[Math.floor(r()*a.length)];
+  const epi=pick(PRE)+' '+pick(NOUN);const pw=pick(POW);const wp=pick(WEP);const wn=wp[0]==='맨손'?wp[1][0]:`${wp[0]} 「${pick(wp[1])}」`;
+  const mentor=pick(C);const no='VII-'+String(Math.floor(r()*9000)+1000);const apt=(r()*0.9+0.1).toFixed(1);const mis=pick(MISSION);
+  $('idOut').innerHTML=`<div class="idcard fade">
+    <div class="hd"><div class="t">MEIKAI · BORDER DISTRICT VII<b>신입 사신 등록증</b></div><div class="seal">第七<br>境界區</div></div>
+    <div class="idname"><small>${epi}</small>${esc(name)}</div>
+    <div class="fields"><div><small>사신 번호</small><span>${no}</span></div><div><small>적성 등급</small><span>희귀 · 상위 ${apt}%</span></div>
+      <div><small>권능</small><span>「${pw[0]}」</span></div><div><small>무기</small><span>${wn}</span></div>
+      <div class="full"><small>권능 설명</small><span>${pw[1]}</span></div><div class="full"><small>첫 임무</small><span>${mis}</span></div></div>
+    <div class="mentor">${pic(prof(mentor.dir,mentor.im[0],256),mentor.c,mentor.en,'')}<p>담당 선배 <b>${mentor.n}</b> · ${mentor.ep}<br><span style="font-size:12px">"${mentor.line}"</span></p></div></div>
+  <div class="row"><button class="sm" id="idcopy">등록증 복사</button><button class="sm" id="idmentor">${mentor.n} 프로필</button></div>`;
+  $('idcopy').onclick=()=>copy(`[제7경계구 신입 사신 등록증]\n${epi} ${name} (${no})\n권능 「${pw[0]}」 — ${pw[1]}\n무기: ${wn}\n담당 선배: ${mentor.n}\n첫 임무: ${mis}`);
+  $('idmentor').onclick=()=>openChar(mentor.k);
+});
+
+/* draw */
+const flip=$('flip'),back=$('flipBack'),fort=$('fortune'),redraw=$('redraw');
+const PLACE=['비 오는 골목','심야 편의점','옥상','폐역 플랫폼','강변 다리 아래','오래된 서점','네온 간판 아래','텅 빈 교실'];
+const ITEM=['검은 우산','은색 반지','헤드폰','낡은 회중시계','붉은 실','종이학','촛불','손수건'];
+let last=null;
+function doDraw(){
+  if(flip.classList.contains('open'))return;
+  let c;do{c=C[Math.floor(Math.random()*C.length)]}while(c===last);last=c;
+  back.style.setProperty('--c',c.c);
+  back.innerHTML=`${pic(main(c),c.c,c.en,c.wt)}<div class="ov"><div class="ep">${c.ep}</div><div class="nm">${c.n}</div><div class="q">"${c.line}"</div></div>`;
+  fort.innerHTML=`<div><small>행운의 장소</small><span>${PLACE[Math.floor(Math.random()*PLACE.length)]}</span></div><div><small>행운의 물건</small><span>${ITEM[Math.floor(Math.random()*ITEM.length)]}</span></div><div><small>오늘의 권능</small><span>「${c.p}」</span></div>`;
+  requestAnimationFrame(()=>{flip.classList.add('open');fort.classList.add('on');redraw.style.display=''});
+}
+flip.addEventListener('click',()=>{flip.classList.contains('open')?openChar(last.k):doDraw()});
+flip.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip.click()}});
+redraw.onclick=()=>{flip.classList.remove('open');fort.classList.remove('on');setTimeout(doDraw,650)};
+
+/* reveal */
+const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');
+  if(en.target.id==='rank')en.target.querySelectorAll('i[data-w]').forEach(i=>i.style.width=i.dataset.w+'%');
+  if(en.target.classList.contains('intro')&&!typeIntro.done){typeIntro.done=1;typeIntro()}
+  io.unobserve(en.target)}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* site-wide souls: embers + pale wisps */
+(function(){
+  if(RM)return;const cv=$('souls');const x=cv.getContext('2d');let W,H,P=[];
+  function rs(){const d=Math.min(devicePixelRatio||1,2);W=cv.width=innerWidth*d;H=cv.height=innerHeight*d}
+  rs();addEventListener('resize',rs);
+  const np=init=>{const soul=Math.random()<.35;return{x:Math.random()*W,y:init?Math.random()*H:H+10,r:(soul?Math.random()*2+1.2:Math.random()*1.4+.4)*devicePixelRatio,v:(Math.random()*.4+.15)*devicePixelRatio,s:Math.random()*7,a:Math.random()*.5+.2,soul}};
+  for(let i=0;i<34;i++)P.push(np(true));
+  (function loop(){x.clearRect(0,0,W,H);
+    for(let i=0;i<P.length;i++){const p=P[i];p.y-=p.v;p.s+=.015;p.x+=Math.sin(p.s)*.35;
+      const fl=p.a*(.75+Math.sin(p.s*3)*.25);
+      x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fillStyle=p.soul?`rgba(207,227,255,${fl*.55})`:`rgba(235,60,80,${fl})`;
+      x.shadowBlur=p.soul?14:8;x.shadowColor=p.soul?'#cfe3ff':'#e0304a';x.fill();
+      if(p.y<-10)P[i]=np(false)}
+    requestAnimationFrame(loop)})();
+})();
+</script>
+</body>
+</html>
