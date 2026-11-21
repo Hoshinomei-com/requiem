@@ -39,6 +39,9 @@ main,header,footer{position:relative;z-index:1}
   font-family:var(--display);letter-spacing:.25em;font-weight:700;color:color-mix(in srgb,var(--c,#b3122e) 70%, #fff);font-size:14px;text-align:center;padding:10px}
 .ph>span svg{width:34%;max-width:70px;opacity:.75}
 .ph>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+.ph,.ph img,#op img,.map image,.flip{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none}
+.ph>img,.ph>.bb,#op img,#op .bb,.map image{pointer-events:none}
+.ph>b.wm{position:absolute;right:24px;bottom:12px;z-index:4;font-family:var(--display);font-weight:500;font-size:10px;letter-spacing:.14em;color:rgba(255,255,255,.6);text-shadow:0 1px 4px rgba(0,0,0,.9);pointer-events:none}
 .ph.char>img{object-position:center 16%}
 .ph>.bb{position:absolute;inset:-30px;z-index:1;background:center/cover no-repeat;filter:blur(22px) brightness(.45) saturate(1.15);display:none}
 .ph.fit>.bb{display:block}
@@ -605,7 +608,7 @@ footer p{margin:4px 0}
   <div class="lg">RE<b>:</b>QUIEM</div>
   <div class="lm">LIBERA ME</div>
   <p>원작 플롯 「RE:QUIEM — 사신들의 진혼곡」 · 제작 ⭐_MEI (@Hoshino_mei)</p>
-  <p>캐릭터·이미지의 권리는 원작자에게 있으며, 이 페이지는 비공식 팬 소개 페이지입니다.</p>
+  <p>모든 캐릭터 이미지의 저작권은 ⭐_MEI에게 있습니다. 무단 저장·도용·재배포를 금지합니다.</p>
   <p style="margin-top:14px"><a href="https://zeta-ai.io/ko/plots/97e02420-39a0-4ee7-9dfd-c32551bff3aa/profile?share_id=vd72kwj8" target="_blank" rel="noopener">zeta에서 원작 보기 →</a></p>
 </footer>
 
@@ -619,12 +622,12 @@ footer p{margin:4px 0}
 const PID='97e02420-39a0-4ee7-9dfd-c32551bff3aa';
 const Z='https://image.zeta-ai.io/';
 const IMG={
-  cover:Z+'plot-cover-image/'+PID+'/9409fa02-18e9-4f85-8b7d-3ff30213bab0.png',
-  intro:['019e1fa1-4fd3-416a-8f36-03c51b5cd84d.png','408ba435-2eec-4549-83aa-84f27baa172b.png'].map(f=>{const u=Z+'plot-intro-image/'+PID+'/'+f;return u+'|'+u+'?w=1080&q=90&f=webp'}),
+  cover:Z+'plot-cover-image/'+PID+'/9409fa02-18e9-4f85-8b7d-3ff30213bab0.png?w=1080&q=88&f=webp',
+  intro:['019e1fa1-4fd3-416a-8f36-03c51b5cd84d.png','408ba435-2eec-4549-83aa-84f27baa172b.png'].map(f=>{const u=Z+'plot-intro-image/'+PID+'/'+f;return u+'?w=1080&q=88&f=webp|'+u+'?w=640&q=88&f=webp'}),
   about:['ab095554-963b-4a12-8cf4-9abaafbdb12a.png','18ab3b12-5890-4c19-b55d-cdbbc9bdc0d0.png','6f47f134-1328-4b7e-a4ee-f45a0fd2c10b.png','ec413673-24a0-42b3-af25-afa7cbb33936.png']
-    .map(f=>{const u=Z+'plot-about-image/'+PID+'/'+f;return u+'|'+u+'?w=1080&q=90&f=webp'})
+    .map(f=>{const u=Z+'plot-about-image/'+PID+'/'+f;return u+'?w=1080&q=88&f=webp|'+u+'?w=640&q=88&f=webp'})
 };
-const prof=(dir,f,w)=>{const u=Z+'profile-image/'+PID+'/'+dir+'/'+f+'.png';return w==='orig'?u+'|'+u+'?w=1080&q=90&f=webp':u+'?w='+(w||640)+'&q=90&f=webp'};
+const prof=(dir,f,w)=>{const u=Z+'profile-image/'+PID+'/'+dir+'/'+f+'.png';return w==='orig'?u+'?w=1080&q=88&f=webp|'+u+'?w=640&q=88&f=webp':u+'?w='+(w||640)+'&q=88&f=webp'};
 const GLYPH={
   '장검':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2l1.6 3v11h-3.2V5z"/><path d="M7.5 16h9M12 16v4.5M10.5 21.5h3"/></svg>',
   '대낫':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 22L15 3"/><path d="M14.3 5C10 3.5 5 5.5 3 10c3.2-2.4 7.4-3 11-2"/></svg>',
@@ -730,9 +733,12 @@ const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function imgTag(url,lazy){const [src,fb]=String(url).split('|');
   return `<i class="bb"></i><img src="${src}"${fb?` data-fb="${fb}"`:''} alt="" ${lazy?'loading="lazy" ':''}decoding="async" onload="fitImg(this)" onerror="imgErr(this)">`}
+const WM='<b class="wm">© ⭐_MEI · RE:QUIEM</b>';
 function pic(url,color,label,glyph,cls='',extra=''){
-  return `<div class="ph ${cls}" style="--c:${color}" ${extra}><span>${glyph?GLYPH[glyph]||'':''}${label||''}</span>${imgTag(url,true)}</div>`;
+  const wm=/\b(mimg|nat|wmk)\b/.test(cls)?WM:'';
+  return `<div class="ph ${cls}" style="--c:${color}" ${extra}><span>${glyph?GLYPH[glyph]||'':''}${label||''}</span>${imgTag(url,true)}${wm}</div>`;
 }
+['contextmenu','dragstart'].forEach(ev=>document.addEventListener(ev,e=>{if(e.target.closest&&e.target.closest('.ph,#op,.map,.flip,img'))e.preventDefault()}));
 function setPic(el,url){el.insertAdjacentHTML('beforeend',imgTag(url,false))}
 function imgErr(img){const fb=img.dataset.fb;if(fb){img.removeAttribute('data-fb');img.src=fb}else{const b=img.previousElementSibling;if(b&&b.classList.contains('bb'))b.remove();img.remove()}}
 /* if the frame would crop too much of the picture, show it whole over a blurred copy */
@@ -1029,7 +1035,7 @@ addEventListener('scroll',()=>{const h=document.documentElement;$('prog').style.
 
 /* hero + prologue images */
 setPic($('heroBg'),IMG.cover);
-setPic($('introImg'),IMG.intro[1]);
+setPic($('introImg'),IMG.intro[1]);$('introImg').insertAdjacentHTML('beforeend',WM);
 
 /* prologue typewriter */
 const LINES=['…차갑고 단단한 돌바닥의 감촉.','눈을 뜨자, 끝이 보이지 않는 검은 회랑이 펼쳐져 있었다.','이름은 없다. 과거도 없다. 다만 손끝에 남은 검붉은 온기만이.','이곳은 명계, 제7경계구 — 당신의 두 번째 생이 시작되는 곳.'];
@@ -1160,7 +1166,7 @@ function quizQ(){
 }
 function quizRes(){
   const ranked=Object.entries(score).sort((a,b)=>b[1]-a[1]||Math.random()-.5);const c=BY[ranked[0][0]],s=BY[ranked[1][0]];
-  quiz.innerHTML=`<div class="res fade" style="--c:${c.c}">${pic(main(c),c.c,c.en,c.wt,'frame char')}
+  quiz.innerHTML=`<div class="res fade" style="--c:${c.c}">${pic(main(c),c.c,c.en,c.wt,'frame char wmk')}
     <div><div class="lbl">당신과 가장 닮은 사신</div><h3><small>${c.ep}</small>${c.n}</h3><p>${c.res}</p>
      <div class="match">추천 담당 업무 · <b>${c.role}</b><br>두 번째로 닮은 사신 · <b>${s.n}</b> (${s.ep})</div>
      <div class="row"><button class="sm" id="qprof">${c.n} 프로필 보기</button><button class="sm" id="qcopy">결과 복사</button><button class="sm" id="qre">↺ 다시 하기</button></div></div></div>`;
