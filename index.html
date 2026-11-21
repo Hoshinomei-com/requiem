@@ -38,7 +38,16 @@ main,header,footer{position:relative;z-index:1}
 .ph>span{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
   font-family:var(--display);letter-spacing:.25em;font-weight:700;color:color-mix(in srgb,var(--c,#b3122e) 70%, #fff);font-size:14px;text-align:center;padding:10px}
 .ph>span svg{width:34%;max-width:70px;opacity:.75}
-.ph>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:2}
+.ph.char>img{object-position:center 16%}
+.ph>.bb{position:absolute;inset:-30px;z-index:1;background:center/cover no-repeat;filter:blur(22px) brightness(.45) saturate(1.15);display:none}
+.ph.fit>.bb{display:block}
+.ph.fit>img{object-fit:contain;object-position:center}
+.ph.nat.ok{aspect-ratio:auto!important;min-height:0!important}
+.ph.nat.ok>img{position:relative;height:auto}
+.mimg.ok>img{max-height:74svh;object-fit:contain}
+.mimg.ok>.bb{display:block}
+#heroBg.fit>img{object-position:center 14%}
 
 /* progress */
 #prog{position:fixed;top:0;left:0;height:2px;width:0;z-index:51;background:linear-gradient(90deg,#5a0613,var(--blood2));box-shadow:0 0 10px var(--blood2)}
@@ -133,6 +142,7 @@ section{padding:70px 22px;max-width:960px;margin:0 auto;position:relative}
 .wcard{display:grid;grid-template-columns:1fr;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--panel)}
 .wcard .ph{aspect-ratio:16/9}
 .wcard .tx{padding:18px}
+.wcard{align-items:start}
 .wcard .tx small{font-family:var(--display);color:var(--blood2);letter-spacing:.3em;font-size:10.5px}
 .wcard h3{font-family:var(--serif);font-size:20px;margin:2px 0 6px}
 .wcard p{color:var(--mute);font-size:14px}
@@ -274,11 +284,12 @@ section{padding:70px 22px;max-width:960px;margin:0 auto;position:relative}
 @keyframes up{from{transform:translateY(40px);opacity:0}}
 @media(min-width:760px){.sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:min(860px,94vw);max-height:88vh;border-radius:8px;border:1px solid var(--c);animation:pop .3s}
   @keyframes pop{from{opacity:0;transform:translate(-50%,-46%)}}}
-.close{position:sticky;top:10px;float:right;margin:10px 10px 0 0;width:36px;height:36px;border-radius:50%;background:rgba(6,5,8,.75);border:1px solid var(--line);font-size:18px;z-index:5}
+.close{position:sticky;top:10px;display:block;margin:10px 10px -46px auto;width:36px;height:36px;border-radius:50%;background:rgba(6,5,8,.75);border:1px solid var(--line);font-size:18px;z-index:5}
 .mhero{display:grid;gap:0}
 @media(min-width:760px){.mhero{grid-template-columns:330px minmax(0,1fr)}}
-.mimg{aspect-ratio:3/4}
-@media(max-width:759px){.mimg{aspect-ratio:4/4.4}}
+.ph.mimg{display:flex;align-items:center;justify-content:center;min-height:300px;aspect-ratio:auto}
+.ph.mimg>img{position:relative;inset:auto;width:100%;height:auto;max-height:78svh;object-fit:contain;object-position:center}
+.ph.mimg>.bb{display:block}
 .thumbs{display:flex;gap:6px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none}
 .thumbs::-webkit-scrollbar{display:none}
 .thumbs button{width:52px;height:52px;border-radius:3px;overflow:hidden;flex:none;border:1px solid var(--line);opacity:.6}
@@ -358,6 +369,9 @@ footer p{margin:4px 0}
 #scene.on .art .zoom{animation:creep 9s ease-out forwards}
 @keyframes creep{from{transform:scale(1.18)}to{transform:scale(1.02)}}
 #scene .art img,#scene .art svg.sil{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+#scene .art .bb{position:absolute;inset:-40px;background:center/cover no-repeat;filter:blur(26px) brightness(.4);display:none}
+#scene .zoom.fit .bb{display:block}
+#scene .zoom.fit img{object-fit:contain;object-position:center}
 #scene .art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.1) 40%,rgba(0,0,0,.75)),radial-gradient(70% 55% at 50% 45%,transparent,rgba(0,0,0,.7))}
 .hint{position:absolute;left:0;right:0;bottom:7%;text-align:center;z-index:12;font-size:12.5px;letter-spacing:.25em;color:rgba(255,190,200,.85);opacity:0;transition:.8s}
 .hint.on{opacity:1;animation:hb 1.6s ease-in-out infinite}
@@ -481,7 +495,7 @@ footer p{margin:4px 0}
 </div>
 
 <header class="hero" id="top">
-  <div class="bg ph" id="heroBg" style="--c:#b3122e"><span></span></div>
+  <div class="bg ph" id="heroBg" data-tol=".5" style="--c:#b3122e"><span></span></div>
   <svg class="crack" style="left:0;top:18%;width:140px;height:220px" viewBox="0 0 140 220"><path d="M0,10 L30,40 L22,70 L55,95 L48,130 L80,150 L74,190 L100,215 M30,40 L60,34 M55,95 L88,88 M80,150 L112,160"/></svg>
   <svg class="crack" style="right:0;bottom:30%;width:110px;height:170px" viewBox="0 0 110 170"><path d="M110,0 L84,30 L92,58 L64,80 L70,112 L40,136 L46,168 M84,30 L58,24 M64,80 L36,74 M40,136 L14,128"/></svg>
   <div class="vtext">REQUIEM AETERNAM DONA EIS</div>
@@ -504,7 +518,7 @@ footer p{margin:4px 0}
 <section id="intro">
   <div class="sh reveal" data-n="I"><div class="no">MOVEMENT I · INTROITUS</div><h2>검은 회랑에서 눈을 뜨다</h2></div>
   <div class="intro reveal">
-    <div class="intro-img ph frame" id="introImg" style="--c:#7a0b1f"><span></span></div>
+    <div class="intro-img ph frame nat" id="introImg" style="--c:#7a0b1f"><span></span></div>
     <div class="type" id="type"></div>
     <button class="replay" id="replay">↺ 다시 읽기</button>
   </div>
@@ -606,12 +620,11 @@ const PID='97e02420-39a0-4ee7-9dfd-c32551bff3aa';
 const Z='https://image.zeta-ai.io/';
 const IMG={
   cover:Z+'plot-cover-image/'+PID+'/9409fa02-18e9-4f85-8b7d-3ff30213bab0.png',
-  intro:[Z+'plot-intro-image/'+PID+'/019e1fa1-4fd3-416a-8f36-03c51b5cd84d.png?w=1080&q=90&f=webp',
-         Z+'plot-intro-image/'+PID+'/408ba435-2eec-4549-83aa-84f27baa172b.png?w=1080&q=90&f=webp'],
+  intro:['019e1fa1-4fd3-416a-8f36-03c51b5cd84d.png','408ba435-2eec-4549-83aa-84f27baa172b.png'].map(f=>{const u=Z+'plot-intro-image/'+PID+'/'+f;return u+'|'+u+'?w=1080&q=90&f=webp'}),
   about:['ab095554-963b-4a12-8cf4-9abaafbdb12a.png','18ab3b12-5890-4c19-b55d-cdbbc9bdc0d0.png','6f47f134-1328-4b7e-a4ee-f45a0fd2c10b.png','ec413673-24a0-42b3-af25-afa7cbb33936.png']
-    .map(f=>Z+'plot-about-image/'+PID+'/'+f+'?w=1080&q=90&f=webp')
+    .map(f=>{const u=Z+'plot-about-image/'+PID+'/'+f;return u+'|'+u+'?w=1080&q=90&f=webp'})
 };
-const prof=(dir,f,w)=>Z+'profile-image/'+PID+'/'+dir+'/'+f+'.png?w='+(w||640)+'&q=75&f=webp';
+const prof=(dir,f,w)=>{const u=Z+'profile-image/'+PID+'/'+dir+'/'+f+'.png';return w==='orig'?u+'|'+u+'?w=1080&q=90&f=webp':u+'?w='+(w||640)+'&q=90&f=webp'};
 const GLYPH={
   '장검':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2l1.6 3v11h-3.2V5z"/><path d="M7.5 16h9M12 16v4.5M10.5 21.5h3"/></svg>',
   '대낫':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 22L15 3"/><path d="M14.3 5C10 3.5 5 5.5 3 10c3.2-2.4 7.4-3 11-2"/></svg>',
@@ -715,11 +728,27 @@ const REL=[
 const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
 
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function imgTag(url,lazy){const [src,fb]=String(url).split('|');
+  return `<i class="bb"></i><img src="${src}"${fb?` data-fb="${fb}"`:''} alt="" ${lazy?'loading="lazy" ':''}decoding="async" onload="fitImg(this)" onerror="imgErr(this)">`}
 function pic(url,color,label,glyph,cls='',extra=''){
-  return `<div class="ph ${cls}" style="--c:${color}" ${extra}><span>${glyph?GLYPH[glyph]||'':''}${label||''}</span><img src="${url}" alt="" loading="lazy" onerror="this.remove()"></div>`;
+  return `<div class="ph ${cls}" style="--c:${color}" ${extra}><span>${glyph?GLYPH[glyph]||'':''}${label||''}</span>${imgTag(url,true)}</div>`;
 }
-function setPic(el,url){el.insertAdjacentHTML('beforeend',`<img src="${url}" alt="" onerror="this.remove()">`)}
-const main=c=>prof(c.dir,c.im[0],640);
+function setPic(el,url){el.insertAdjacentHTML('beforeend',imgTag(url,false))}
+function imgErr(img){const fb=img.dataset.fb;if(fb){img.removeAttribute('data-fb');img.src=fb}else{const b=img.previousElementSibling;if(b&&b.classList.contains('bb'))b.remove();img.remove()}}
+/* if the frame would crop too much of the picture, show it whole over a blurred copy */
+function fitImg(img){
+  const box=img.parentElement;if(!box||!img.naturalWidth)return;
+  box.classList.add('ok');
+  if(box.classList.contains('nat')){const b=box.querySelector(':scope>.bb');if(b)b.style.backgroundImage=`url("${img.currentSrc||img.src}")`;return}
+  const w=box.clientWidth,h=box.clientHeight;if(!w||!h)return;
+  const ir=img.naturalWidth/img.naturalHeight,br=w/h,loss=1-Math.min(ir,br)/Math.max(ir,br);
+  const fit=loss>(+box.dataset.tol||.12);box.classList.toggle('fit',fit);
+  const bb=box.querySelector(':scope>.bb');if(fit&&bb)bb.style.backgroundImage=`url("${img.currentSrc||img.src}")`;
+}
+function refit(){document.querySelectorAll('.ph>img').forEach(i=>{if(i.complete&&i.naturalWidth)fitImg(i)})}
+addEventListener('resize',()=>{clearTimeout(refit.t);refit.t=setTimeout(refit,200)});
+const main=c=>prof(c.dir,c.im[0],1080);
+const big=c=>prof(c.dir,c.im[0],'orig');
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1800)}
 async function copy(text){try{await navigator.clipboard.writeText(text);toast('복사했어요 · 붙여넣어 공유해 보세요')}catch(e){toast('복사가 막혀 있어요 — 화면을 캡처해 공유해 주세요')}}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -871,7 +900,10 @@ const SIL=`<svg class="sil" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid 
  <path d="M200 150c-40 0-62 34-62 74 0 22 6 40 16 52-44 22-74 80-86 170l-18 254h300l-18-254c-12-90-42-148-86-170 10-12 16-30 16-52 0-40-22-74-62-74z" fill="#020102"/>
  <path d="M300 120L230 690" stroke="#0b0306" stroke-width="7"/><path d="M296 128c-70-34-170-18-226 54 70-34 150-40 222-18z" fill="#0b0306" stroke="#e0304a" stroke-opacity=".6" stroke-width="1.5"/>
  <circle cx="186" cy="226" r="3" fill="#ff3550"/><circle cx="214" cy="226" r="3" fill="#ff3550"/></svg>`;
-document.querySelectorAll('[data-art]').forEach(z=>{z.innerHTML=SIL+`<img src="${IMG.cover}" alt="" onerror="this.remove()">`});
+function fitScene(img){if(!img.naturalWidth)return;const ir=img.naturalWidth/img.naturalHeight,br=innerWidth/innerHeight;
+  const fit=1-Math.min(ir,br)/Math.max(ir,br)>.38;document.querySelectorAll('[data-art]').forEach(z=>z.classList.toggle('fit',fit))}
+document.querySelectorAll('[data-art]').forEach(z=>{z.innerHTML=SIL+`<i class="bb" style="background-image:url('${IMG.cover}')"></i><img src="${IMG.cover}" alt="" onload="fitScene(this)" onerror="this.remove()">`});
+addEventListener('resize',()=>{const i=document.querySelector('[data-art] img');if(i)fitScene(i)});
 
 /* opening particle system */
 const cv=$('opCv'),cx2=cv.getContext('2d');let OW,OH,PS=[],mode='idle',raf;
@@ -1022,14 +1054,14 @@ const WORLD=[
  ['DISTRICT VII','제7경계구','강한 사신들이 모인 명계의 경계구. 심판자 아비터가 통솔하고, 아홉 명의 사신이 협력하거나 경쟁하며 임무를 수행한다. 쉬는 날엔 현세를 어슬렁거리기도 한다.'],
  ['NEW NAME','죽음 이후, 새로운 이름','당신은 죽은 뒤 과거와 이름을 잃었다. 그리고 드문 적성을 인정받아 사신으로 선택되었다. 악귀와 싸울지, 망자의 이야기를 들어줄지 — 길은 당신이 정한다.']
 ];
-$('worldList').innerHTML=WORLD.map((w,i)=>`<article class="wcard reveal frame">${pic(IMG.about[i],'#b3122e','','seal')}<div class="tx"><small>${w[0]}</small><h3>${w[1]}</h3><p>${w[2]}</p></div></article>`).join('');
+$('worldList').innerHTML=WORLD.map((w,i)=>`<article class="wcard reveal frame">${pic(IMG.about[i],'#b3122e','','seal','nat')}<div class="tx"><small>${w[0]}</small><h3>${w[1]}</h3><p>${w[2]}</p></div></article>`).join('');
 
 /* roster */
 const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 const grid=$('grid');
 grid.innerHTML=C.map((c,i)=>`
  <button class="card reveal frame" data-k="${c.k}" data-w="${c.wt}" style="--c:${c.c}">
-  ${pic(main(c),c.c,c.en,c.wt)}
+  ${pic(prof(c.dir,c.im[0],640),c.c,c.en,c.wt,'char')}
   <span class="num">${ROMAN[i]}</span>
   <span class="bdg">「${c.p}」</span>
   <div class="ov"><div class="ep">${c.ep}</div><div class="nm">${c.n}</div><div class="rl">${c.role}</div></div>
@@ -1038,7 +1070,7 @@ grid.addEventListener('click',e=>{const b=e.target.closest('.card');if(b)openCha
 $('filters').addEventListener('click',e=>{
   const b=e.target.closest('.chip');if(!b)return;
   document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));
-  const f=b.dataset.f;grid.querySelectorAll('.card').forEach(card=>card.classList.toggle('hide',f!=='all'&&card.dataset.w!==f));
+  const f=b.dataset.f;grid.querySelectorAll('.card').forEach(card=>card.classList.toggle('hide',f!=='all'&&card.dataset.w!==f));refit();
 });
 const sorted=[...C].sort((a,b)=>b.yr-a.yr);
 $('bars').innerHTML=sorted.map(c=>`<div class="bar" style="--c:${c.c}"><span>${c.n}</span><div class="t"><i data-w="${c.yr/263*100}"></i></div><span class="v">${c.yr}년</span></div>`).join('');
@@ -1058,7 +1090,7 @@ $('bars').innerHTML=sorted.map(c=>`<div class="bar" style="--c:${c.c}"><span>${c
   order.forEach(k=>{const c=BY[k],[x,y]=pos[k];
     s+=`<g class="node" data-k="${k}"><circle cx="${x}" cy="${y}" r="${r+3}" fill="none" stroke="${c.c}" stroke-width="1.5"/><circle cx="${x}" cy="${y}" r="${r}" fill="${c.c}" opacity=".35"/>
       <text x="${x}" y="${y+4}" style="font-family:Cinzel;font-size:9px;letter-spacing:1px">${c.en.slice(0,3)}</text>
-      <image data-src="${prof(c.dir,c.im[0],256)}" x="${x-r}" y="${y-r}" width="${r*2}" height="${r*2}" preserveAspectRatio="xMidYMin slice" clip-path="url(#cp-${k})"/>
+      <image data-src="${prof(c.dir,c.im[0],384)}" x="${x-r}" y="${y-r}" width="${r*2}" height="${r*2}" preserveAspectRatio="xMidYMin slice" clip-path="url(#cp-${k})"/>
       <text x="${x}" y="${y+r+16}">${c.n}</text></g>`});
   const svg=$('mapSvg');svg.innerHTML=s;
   svg.querySelectorAll('image[data-src]').forEach(im=>{const t=new Image();t.onload=()=>im.setAttribute('href',t.src);t.src=im.dataset.src});
@@ -1079,8 +1111,8 @@ function openChar(k){
   const c=BY[k];sheet.style.setProperty('--c',c.c);const rels=relsOf(k);
   sheet.innerHTML=`<button class="close" data-close aria-label="닫기">✕</button>
    <div class="mhero"><div>
-       ${pic(main(c),c.c,c.en,c.wt,'mimg frame','id="mimg"')}
-       <div class="thumbs">${c.im.map((f,i)=>`<button data-i="${i}" class="${i?'':'on'}">${pic(prof(c.dir,f,256),c.c,'',c.wt)}</button>`).join('')}</div>
+       ${pic(big(c),c.c,c.en,c.wt,'mimg frame char nat','id="mimg"')}
+       <div class="thumbs">${c.im.map((f,i)=>`<button data-i="${i}" data-big="${prof(c.dir,f,'orig')}" class="${i?'':'on'}">${pic(prof(c.dir,f,384),c.c,'',c.wt,'char','data-tol="9"')}</button>`).join('')}</div>
      </div>
      <div class="mbody">
        <div class="ep">${c.ep}</div><h3>${c.n}<small>${c.en}</small></h3>
@@ -1090,7 +1122,7 @@ function openChar(k){
        <div class="blk"><h4>권능 · 전투</h4><p>${c.ab}</p></div>
        <div class="blk"><h4>성격</h4><p>${c.per}</p></div>
        <div class="likes"><div class="y"><small>♡ 좋아하는 것</small>${c.like}</div><div class="n"><small>✕ 싫어하는 것</small>${c.hate}</div></div>
-       ${rels.length?`<div class="blk"><h4>관계</h4><div class="rel">${rels.map(r=>{const o=BY[r.o];return `<button data-go="${o.k}" style="--c2:${o.c}">${pic(prof(o.dir,o.im[0],256),o.c,'','')}${o.n} <em>${r.l}</em></button>`}).join('')}</div></div>`:''}
+       ${rels.length?`<div class="blk"><h4>관계</h4><div class="rel">${rels.map(r=>{const o=BY[r.o];return `<button data-go="${o.k}" style="--c2:${o.c}">${pic(prof(o.dir,o.im[0],256),o.c,'','','char','data-tol="9"')}${o.n} <em>${r.l}</em></button>`}).join('')}</div></div>`:''}
        ${k==='ab'?`<div class="blk"><h4>설정 메모</h4><p style="font-size:13px;color:var(--dim)">일부 설명에 대낫으로 적힌 부분이 있지만, 제작자 코멘트에 따라 무기는 장검 「천관」이 맞습니다.</p></div>`:''}
      </div></div>`;
   modal.classList.add('on');modal.setAttribute('aria-hidden','false');document.body.classList.add('lock');sheet.scrollTop=0;
@@ -1101,7 +1133,8 @@ modal.addEventListener('click',e=>{
   const t=e.target.closest('.thumbs button');
   if(t){const mi=$('mimg');const img=t.querySelector('img');
     sheet.querySelectorAll('.thumbs button').forEach(b=>b.classList.toggle('on',b===t));
-    if(mi&&img){const m=mi.querySelector('img');const src=img.src.replace('w=256','w=640');if(m)m.src=src;else setPic(mi,src)}return}
+    if(mi){const [src,fb]=t.dataset.big.split('|');const m=mi.querySelector(':scope>img');mi.classList.remove('fit');
+      if(m){m.dataset.fb=fb;m.src=src}else setPic(mi,t.dataset.big)}return}
   const g=e.target.closest('[data-go]');if(g)openChar(g.dataset.go);
 });
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();document.body.classList.remove('menu-open')}});
@@ -1127,7 +1160,7 @@ function quizQ(){
 }
 function quizRes(){
   const ranked=Object.entries(score).sort((a,b)=>b[1]-a[1]||Math.random()-.5);const c=BY[ranked[0][0]],s=BY[ranked[1][0]];
-  quiz.innerHTML=`<div class="res fade" style="--c:${c.c}">${pic(main(c),c.c,c.en,c.wt,'frame')}
+  quiz.innerHTML=`<div class="res fade" style="--c:${c.c}">${pic(main(c),c.c,c.en,c.wt,'frame char')}
     <div><div class="lbl">당신과 가장 닮은 사신</div><h3><small>${c.ep}</small>${c.n}</h3><p>${c.res}</p>
      <div class="match">추천 담당 업무 · <b>${c.role}</b><br>두 번째로 닮은 사신 · <b>${s.n}</b> (${s.ep})</div>
      <div class="row"><button class="sm" id="qprof">${c.n} 프로필 보기</button><button class="sm" id="qcopy">결과 복사</button><button class="sm" id="qre">↺ 다시 하기</button></div></div></div>`;
@@ -1156,7 +1189,7 @@ $('idForm').addEventListener('submit',e=>{
     <div class="fields"><div><small>사신 번호</small><span>${no}</span></div><div><small>적성 등급</small><span>희귀 · 상위 ${apt}%</span></div>
       <div><small>권능</small><span>「${pw[0]}」</span></div><div><small>무기</small><span>${wn}</span></div>
       <div class="full"><small>권능 설명</small><span>${pw[1]}</span></div><div class="full"><small>첫 임무</small><span>${mis}</span></div></div>
-    <div class="mentor">${pic(prof(mentor.dir,mentor.im[0],256),mentor.c,mentor.en,'')}<p>담당 선배 <b>${mentor.n}</b> · ${mentor.ep}<br><span style="font-size:12px">"${mentor.line}"</span></p></div></div>
+    <div class="mentor">${pic(prof(mentor.dir,mentor.im[0],256),mentor.c,mentor.en,'','char','data-tol="9"')}<p>담당 선배 <b>${mentor.n}</b> · ${mentor.ep}<br><span style="font-size:12px">"${mentor.line}"</span></p></div></div>
   <div class="row"><button class="sm" id="idcopy">등록증 복사</button><button class="sm" id="idmentor">${mentor.n} 프로필</button></div>`;
   $('idcopy').onclick=()=>copy(`[제7경계구 신입 사신 등록증]\n${epi} ${name} (${no})\n권능 「${pw[0]}」 — ${pw[1]}\n무기: ${wn}\n담당 선배: ${mentor.n}\n첫 임무: ${mis}`);
   $('idmentor').onclick=()=>openChar(mentor.k);
@@ -1171,7 +1204,7 @@ function doDraw(){
   if(flip.classList.contains('open'))return;
   let c;do{c=C[Math.floor(Math.random()*C.length)]}while(c===last);last=c;
   back.style.setProperty('--c',c.c);
-  back.innerHTML=`${pic(main(c),c.c,c.en,c.wt)}<div class="ov"><div class="ep">${c.ep}</div><div class="nm">${c.n}</div><div class="q">"${c.line}"</div></div>`;
+  back.innerHTML=`${pic(main(c),c.c,c.en,c.wt,'char')}<div class="ov"><div class="ep">${c.ep}</div><div class="nm">${c.n}</div><div class="q">"${c.line}"</div></div>`;
   fort.innerHTML=`<div><small>행운의 장소</small><span>${PLACE[Math.floor(Math.random()*PLACE.length)]}</span></div><div><small>행운의 물건</small><span>${ITEM[Math.floor(Math.random()*ITEM.length)]}</span></div><div><small>오늘의 권능</small><span>「${c.p}」</span></div>`;
   requestAnimationFrame(()=>{flip.classList.add('open');fort.classList.add('on');redraw.style.display=''});
 }
